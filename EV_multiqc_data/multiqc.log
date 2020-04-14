@@ -1,0 +1,122 @@
+[2020-04-14 17:14:06,429] multiqc                                            [DEBUG  ]  No MultiQC config found: /opt/software/MultiQC/1.7-foss-2018b-Python-2.7.15/lib/python2.7/site-packages/multiqc_config.yaml
+[2020-04-14 17:14:06,430] multiqc                                            [DEBUG  ]  No MultiQC config found: /home/meschedl/.multiqc_config.yaml
+[2020-04-14 17:14:06,431] multiqc                                            [DEBUG  ]  No MultiQC config found: multiqc_config.yaml
+[2020-04-14 17:14:06,431] multiqc                                            [DEBUG  ]  Command used: /opt/software/MultiQC/1.7-foss-2018b-Python-2.7.15/bin/multiqc EV_29_4C1_S4_L001_R1_001_fastqc.zip EV_29_4C2_S12_L001_R1_001_fastqc.zip EV_29_4C3_S20_L002_R1_001_fastqc.zip EV_29_B1_S52_L005_R1_001_fastqc.zip EV_29_B2_S60_L005_R1_001_fastqc.zip EV_29_B3_S67_L006_R1_001_fastqc.zip EV_29_G1_S5_L001_R1_001_fastqc.zip EV_29_G2_S13_L002_R1_001_fastqc.zip EV_29_G3_S21_L002_R1_001_fastqc.zip EV_29_L1_S53_L005_R1_001_fastqc.zip EV_29_L2_S61_L006_R1_001_fastqc.zip EV_29_L3_S68_L006_R1_001_fastqc.zip EV_33_4C1_S74_L007_R1_001_fastqc.zip EV_33_4C2_S81_L007_R1_001_fastqc.zip EV_33_4C3_S87_L008_R1_001_fastqc.zip EV_33_B1_S28_L003_R1_001_fastqc.zip EV_33_B2_S36_L003_R1_001_fastqc.zip EV_33_B3_S44_L004_R1_001_fastqc.zip EV_33_G1_S29_L003_R1_001_fastqc.zip EV_33_G1_S29_L007_R1_001_fastqc.zip EV_33_G2_S37_L004_R1_001_fastqc.zip EV_33_G2_S37_L008_R1_001_fastqc.zip EV_33_G3_S45_L004_R1_001_fastqc.zip EV_33_G3_S45_L008_R1_001_fastqc.zip EV_EGG_1_S6_L001_R1_001_fastqc.zip EV_EGG_2_S14_L002_R1_001_fastqc.zip EV_EGG_3_S22_L002_R1_001_fastqc.zip EV_EGGS_1_S51_L005_R1_001_fastqc.zip EV_EGGS_2_S59_L005_R1_001_fastqc.zip EV_EGGS_3_S66_L006_R1_001_fastqc.zip
+[2020-04-14 17:14:07,157] multiqc                                            [WARNING]  MultiQC Version v1.8 now available!
+[2020-04-14 17:14:07,158] multiqc                                            [INFO   ]  This is MultiQC v1.7
+[2020-04-14 17:14:07,158] multiqc                                            [DEBUG  ]  Command     : /opt/software/MultiQC/1.7-foss-2018b-Python-2.7.15/bin/multiqc EV_29_4C1_S4_L001_R1_001_fastqc.zip EV_29_4C2_S12_L001_R1_001_fastqc.zip EV_29_4C3_S20_L002_R1_001_fastqc.zip EV_29_B1_S52_L005_R1_001_fastqc.zip EV_29_B2_S60_L005_R1_001_fastqc.zip EV_29_B3_S67_L006_R1_001_fastqc.zip EV_29_G1_S5_L001_R1_001_fastqc.zip EV_29_G2_S13_L002_R1_001_fastqc.zip EV_29_G3_S21_L002_R1_001_fastqc.zip EV_29_L1_S53_L005_R1_001_fastqc.zip EV_29_L2_S61_L006_R1_001_fastqc.zip EV_29_L3_S68_L006_R1_001_fastqc.zip EV_33_4C1_S74_L007_R1_001_fastqc.zip EV_33_4C2_S81_L007_R1_001_fastqc.zip EV_33_4C3_S87_L008_R1_001_fastqc.zip EV_33_B1_S28_L003_R1_001_fastqc.zip EV_33_B2_S36_L003_R1_001_fastqc.zip EV_33_B3_S44_L004_R1_001_fastqc.zip EV_33_G1_S29_L003_R1_001_fastqc.zip EV_33_G1_S29_L007_R1_001_fastqc.zip EV_33_G2_S37_L004_R1_001_fastqc.zip EV_33_G2_S37_L008_R1_001_fastqc.zip EV_33_G3_S45_L004_R1_001_fastqc.zip EV_33_G3_S45_L008_R1_001_fastqc.zip EV_EGG_1_S6_L001_R1_001_fastqc.zip EV_EGG_2_S14_L002_R1_001_fastqc.zip EV_EGG_3_S22_L002_R1_001_fastqc.zip EV_EGGS_1_S51_L005_R1_001_fastqc.zip EV_EGGS_2_S59_L005_R1_001_fastqc.zip EV_EGGS_3_S66_L006_R1_001_fastqc.zip
+[2020-04-14 17:14:07,158] multiqc                                            [DEBUG  ]  Working dir : /data/pradalab/meschedl/Echinometra/data-QC/EV-before
+[2020-04-14 17:14:07,158] multiqc                                            [INFO   ]  Template    : default
+[2020-04-14 17:14:07,159] multiqc                                            [INFO   ]  Searching 'EV_29_4C1_S4_L001_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,159] multiqc                                            [INFO   ]  Searching 'EV_29_4C2_S12_L001_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,159] multiqc                                            [INFO   ]  Searching 'EV_29_4C3_S20_L002_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,159] multiqc                                            [INFO   ]  Searching 'EV_29_B1_S52_L005_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,160] multiqc                                            [INFO   ]  Searching 'EV_29_B2_S60_L005_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,160] multiqc                                            [INFO   ]  Searching 'EV_29_B3_S67_L006_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,160] multiqc                                            [INFO   ]  Searching 'EV_29_G1_S5_L001_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,160] multiqc                                            [INFO   ]  Searching 'EV_29_G2_S13_L002_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,160] multiqc                                            [INFO   ]  Searching 'EV_29_G3_S21_L002_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,161] multiqc                                            [INFO   ]  Searching 'EV_29_L1_S53_L005_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,161] multiqc                                            [INFO   ]  Searching 'EV_29_L2_S61_L006_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,161] multiqc                                            [INFO   ]  Searching 'EV_29_L3_S68_L006_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,161] multiqc                                            [INFO   ]  Searching 'EV_33_4C1_S74_L007_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,162] multiqc                                            [INFO   ]  Searching 'EV_33_4C2_S81_L007_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,162] multiqc                                            [INFO   ]  Searching 'EV_33_4C3_S87_L008_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,162] multiqc                                            [INFO   ]  Searching 'EV_33_B1_S28_L003_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,162] multiqc                                            [INFO   ]  Searching 'EV_33_B2_S36_L003_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,162] multiqc                                            [INFO   ]  Searching 'EV_33_B3_S44_L004_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,163] multiqc                                            [INFO   ]  Searching 'EV_33_G1_S29_L003_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,163] multiqc                                            [INFO   ]  Searching 'EV_33_G1_S29_L007_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,163] multiqc                                            [INFO   ]  Searching 'EV_33_G2_S37_L004_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,163] multiqc                                            [INFO   ]  Searching 'EV_33_G2_S37_L008_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,163] multiqc                                            [INFO   ]  Searching 'EV_33_G3_S45_L004_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,164] multiqc                                            [INFO   ]  Searching 'EV_33_G3_S45_L008_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,164] multiqc                                            [INFO   ]  Searching 'EV_EGG_1_S6_L001_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,164] multiqc                                            [INFO   ]  Searching 'EV_EGG_2_S14_L002_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,164] multiqc                                            [INFO   ]  Searching 'EV_EGG_3_S22_L002_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,164] multiqc                                            [INFO   ]  Searching 'EV_EGGS_1_S51_L005_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,165] multiqc                                            [INFO   ]  Searching 'EV_EGGS_2_S59_L005_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,165] multiqc                                            [INFO   ]  Searching 'EV_EGGS_3_S66_L006_R1_001_fastqc.zip'
+[2020-04-14 17:14:07,166] multiqc                                            [DEBUG  ]  Analysing modules: custom_content, conpair, peddy, methylQA, phantompeakqualtools, qualimap, preseq, quast, qorts, rna_seqc, rsem, rseqc, busco, goleft_indexcov, disambiguate, supernova, deeptools, sargasso, verifybamid, mirtrace, happy, homer, macs2, theta2, snpeff, gatk, htseq, bcftools, featureCounts, dedup, damageprofiler, picard, prokka, samblaster, samtools, bamtools, jellyfish, vcftools, longranger, stacks, bbmap, bismark, biscuit, hicexplorer, hicup, hicpro, salmon, kallisto, slamdunk, star, hisat2, tophat, bowtie2, bowtie1, kat, leehom, adapterRemoval, clipandmerge, cutadapt, flexbar, trimmomatic, skewer, sortmerna, biobloomtools, fastq_screen, afterqc, fastp, fastqc, minionqc, clusterflow, bcl2fastq, interop, flash
+[2020-04-14 17:14:07,166] multiqc                                            [DEBUG  ]  Using temporary directory for creating report: /tmp/tmpAjPUmC
+[2020-04-14 17:14:07,595] multiqc                                            [DEBUG  ]  No samples found: custom_content
+[2020-04-14 17:14:07,600] multiqc                                            [DEBUG  ]  No samples found: conpair
+[2020-04-14 17:14:07,606] multiqc                                            [DEBUG  ]  No samples found: peddy
+[2020-04-14 17:14:07,611] multiqc                                            [DEBUG  ]  No samples found: methylQA
+[2020-04-14 17:14:07,616] multiqc                                            [DEBUG  ]  No samples found: phantompeakqualtools
+[2020-04-14 17:14:07,622] multiqc                                            [DEBUG  ]  No samples found: qualimap
+[2020-04-14 17:14:07,627] multiqc                                            [DEBUG  ]  No samples found: preseq
+[2020-04-14 17:14:07,633] multiqc                                            [DEBUG  ]  No samples found: quast
+[2020-04-14 17:14:07,638] multiqc                                            [DEBUG  ]  No samples found: qorts
+[2020-04-14 17:14:07,643] multiqc                                            [DEBUG  ]  No samples found: rna_seqc
+[2020-04-14 17:14:07,648] multiqc                                            [DEBUG  ]  No samples found: rsem
+[2020-04-14 17:14:07,655] multiqc                                            [DEBUG  ]  No samples found: rseqc
+[2020-04-14 17:14:07,660] multiqc                                            [DEBUG  ]  No samples found: busco
+[2020-04-14 17:14:07,665] multiqc                                            [DEBUG  ]  No samples found: goleft_indexcov
+[2020-04-14 17:14:07,671] multiqc                                            [DEBUG  ]  No samples found: disambiguate
+[2020-04-14 17:14:07,676] multiqc                                            [DEBUG  ]  No samples found: supernova
+[2020-04-14 17:14:07,683] multiqc                                            [DEBUG  ]  No samples found: deeptools
+[2020-04-14 17:14:07,688] multiqc                                            [DEBUG  ]  No samples found: sargasso
+[2020-04-14 17:14:07,693] multiqc                                            [DEBUG  ]  No samples found: verifybamid
+[2020-04-14 17:14:07,699] multiqc                                            [DEBUG  ]  No samples found: mirtrace
+[2020-04-14 17:14:07,704] multiqc                                            [DEBUG  ]  No samples found: happy
+[2020-04-14 17:14:07,710] multiqc                                            [DEBUG  ]  No samples found: homer
+[2020-04-14 17:14:07,715] multiqc                                            [DEBUG  ]  No samples found: macs2
+[2020-04-14 17:14:07,720] multiqc                                            [DEBUG  ]  No samples found: theta2
+[2020-04-14 17:14:07,725] multiqc                                            [DEBUG  ]  No samples found: snpeff
+[2020-04-14 17:14:07,731] multiqc                                            [DEBUG  ]  No samples found: gatk
+[2020-04-14 17:14:07,737] multiqc                                            [DEBUG  ]  No samples found: htseq
+[2020-04-14 17:14:07,742] multiqc                                            [DEBUG  ]  No samples found: bcftools
+[2020-04-14 17:14:07,747] multiqc                                            [DEBUG  ]  No samples found: featureCounts
+[2020-04-14 17:14:07,752] multiqc                                            [DEBUG  ]  No samples found: dedup
+[2020-04-14 17:14:07,758] multiqc                                            [DEBUG  ]  No samples found: damageprofiler
+[2020-04-14 17:14:07,765] multiqc                                            [DEBUG  ]  No samples found: picard
+[2020-04-14 17:14:07,770] multiqc                                            [DEBUG  ]  No samples found: prokka
+[2020-04-14 17:14:07,775] multiqc                                            [DEBUG  ]  No samples found: samblaster
+[2020-04-14 17:14:07,781] multiqc                                            [DEBUG  ]  No samples found: samtools
+[2020-04-14 17:14:07,786] multiqc                                            [DEBUG  ]  No samples found: bamtools
+[2020-04-14 17:14:07,792] multiqc                                            [DEBUG  ]  No samples found: jellyfish
+[2020-04-14 17:14:07,797] multiqc                                            [DEBUG  ]  No samples found: vcftools
+[2020-04-14 17:14:07,803] multiqc                                            [DEBUG  ]  No samples found: longranger
+[2020-04-14 17:14:07,808] multiqc                                            [DEBUG  ]  No samples found: stacks
+[2020-04-14 17:14:07,815] multiqc                                            [DEBUG  ]  No samples found: bbmap
+[2020-04-14 17:14:07,821] multiqc                                            [DEBUG  ]  No samples found: bismark
+[2020-04-14 17:14:07,826] multiqc                                            [DEBUG  ]  No samples found: biscuit
+[2020-04-14 17:14:07,831] multiqc                                            [DEBUG  ]  No samples found: hicexplorer
+[2020-04-14 17:14:07,837] multiqc                                            [DEBUG  ]  No samples found: hicup
+[2020-04-14 17:14:07,842] multiqc                                            [DEBUG  ]  No samples found: hicpro
+[2020-04-14 17:14:07,847] multiqc                                            [DEBUG  ]  No samples found: salmon
+[2020-04-14 17:14:07,853] multiqc                                            [DEBUG  ]  No samples found: kallisto
+[2020-04-14 17:14:07,858] multiqc                                            [DEBUG  ]  No samples found: slamdunk
+[2020-04-14 17:14:07,863] multiqc                                            [DEBUG  ]  No samples found: star
+[2020-04-14 17:14:07,869] multiqc                                            [DEBUG  ]  No samples found: hisat2
+[2020-04-14 17:14:07,874] multiqc                                            [DEBUG  ]  No samples found: tophat
+[2020-04-14 17:14:07,879] multiqc                                            [DEBUG  ]  No samples found: bowtie2
+[2020-04-14 17:14:07,885] multiqc                                            [DEBUG  ]  No samples found: bowtie1
+[2020-04-14 17:14:07,890] multiqc                                            [DEBUG  ]  No samples found: kat
+[2020-04-14 17:14:07,895] multiqc                                            [DEBUG  ]  No samples found: leehom
+[2020-04-14 17:14:07,900] multiqc                                            [DEBUG  ]  No samples found: adapterRemoval
+[2020-04-14 17:14:07,905] multiqc                                            [DEBUG  ]  No samples found: clipandmerge
+[2020-04-14 17:14:07,911] multiqc                                            [DEBUG  ]  No samples found: cutadapt
+[2020-04-14 17:14:07,916] multiqc                                            [DEBUG  ]  No samples found: flexbar
+[2020-04-14 17:14:07,921] multiqc                                            [DEBUG  ]  No samples found: trimmomatic
+[2020-04-14 17:14:07,926] multiqc                                            [DEBUG  ]  No samples found: skewer
+[2020-04-14 17:14:07,932] multiqc                                            [DEBUG  ]  No samples found: sortmerna
+[2020-04-14 17:14:07,937] multiqc                                            [DEBUG  ]  No samples found: biobloomtools
+[2020-04-14 17:14:07,942] multiqc                                            [DEBUG  ]  No samples found: fastq_screen
+[2020-04-14 17:14:07,947] multiqc                                            [DEBUG  ]  No samples found: afterqc
+[2020-04-14 17:14:07,953] multiqc                                            [DEBUG  ]  No samples found: fastp
+[2020-04-14 17:14:14,332] multiqc.modules.fastqc.fastqc                      [INFO   ]  Found 30 reports
+[2020-04-14 17:14:16,798] multiqc                                            [DEBUG  ]  No samples found: minionqc
+[2020-04-14 17:14:16,803] multiqc                                            [DEBUG  ]  No samples found: clusterflow
+[2020-04-14 17:14:16,809] multiqc                                            [DEBUG  ]  No samples found: bcl2fastq
+[2020-04-14 17:14:16,814] multiqc                                            [DEBUG  ]  No samples found: interop
+[2020-04-14 17:14:16,820] multiqc                                            [DEBUG  ]  No samples found: flash
+[2020-04-14 17:14:16,874] multiqc                                            [INFO   ]  Compressing plot data
+[2020-04-14 17:14:18,875] multiqc                                            [INFO   ]  Report      : multiqc_report.html
+[2020-04-14 17:14:18,875] multiqc                                            [INFO   ]  Data        : multiqc_data
+[2020-04-14 17:14:18,935] multiqc                                            [DEBUG  ]  Moving data file from '/tmp/tmpAjPUmC/multiqc_data/multiqc_sources.txt' to '/data/pradalab/meschedl/Echinometra/data-QC/EV-before/multiqc_data'
+[2020-04-14 17:14:18,990] multiqc                                            [DEBUG  ]  Moving data file from '/tmp/tmpAjPUmC/multiqc_data/multiqc_general_stats.txt' to '/data/pradalab/meschedl/Echinometra/data-QC/EV-before/multiqc_data'
+[2020-04-14 17:14:19,015] multiqc                                            [DEBUG  ]  Moving data file from '/tmp/tmpAjPUmC/multiqc_data/multiqc_data.json' to '/data/pradalab/meschedl/Echinometra/data-QC/EV-before/multiqc_data'
+[2020-04-14 17:14:19,060] multiqc                                            [DEBUG  ]  Moving data file from '/tmp/tmpAjPUmC/multiqc_data/multiqc_fastqc.txt' to '/data/pradalab/meschedl/Echinometra/data-QC/EV-before/multiqc_data'
+[2020-04-14 17:14:19,353] multiqc                                            [INFO   ]  MultiQC complete
