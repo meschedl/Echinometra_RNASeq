@@ -2,15 +2,15 @@
 
 Sequences to use:
 
-EL_29_4_C1_S49_L005_R1_001.fastq.gz
-EL_33_4C1_S25_L003_R1_001.fastq.gz
-EL_29_B1_S2_L001_R1_001.fastq.gz
-EL_33_B2_S79_L007_R1_001.fastq.gz
-EL_29_G3_S65_L006_R1_001.fastq.gz
-EL_33_G1_S26_L003_R1_001.fastq.gz
-EL_29_L2_S11_L001_R1_001.fastq.gz
-EL_33_L3_S86_L008_R1_001.fastq.gz
-EL_EGGS_2_S9_L001_R1_001.fastq.gz
+EL_29_4_C1_S49_L005_R1_001.fastq.gz  
+EL_33_4C1_S25_L003_R1_001.fastq.gz  
+EL_29_B1_S2_L001_R1_001.fastq.gz  
+EL_33_B2_S79_L007_R1_001.fastq.gz  
+EL_29_G3_S65_L006_R1_001.fastq.gz  
+EL_33_G1_S26_L003_R1_001.fastq.gz  
+EL_29_L2_S11_L001_R1_001.fastq.gz  
+EL_33_L3_S86_L008_R1_001.fastq.gz  
+EL_EGGS_2_S9_L001_R1_001.fastq.gz  
 
 
 
