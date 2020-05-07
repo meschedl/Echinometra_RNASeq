@@ -308,7 +308,7 @@ done
 ```
 Submitted batch job 1121787
 
-## had forgotten head crop
+I had forgotten head crop at first so had to run it again
 
 Now just to check I want to get a multiqc report for the trimmed files. Only the EL files are done being trimmed so I start with those. They were moved to the trimmed-data/ directory, then I made them a sub directory.
 ```
