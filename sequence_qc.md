@@ -345,7 +345,7 @@ multiqc *fastqc.zip
 ### Screenshots of MultiQC Report of EL Trimmed data
 
 **Sequence Duplication**  
-![1](/images/seq-dup "1")
+![1](/images/seq-dup.png "1")
 
 **Per-Base Quality Score**
 ![1](/images/qual-score.png "1")
@@ -357,4 +357,4 @@ multiqc *fastqc.zip
 ![1](/images/seq-content.png "1")
 
 **GC Content**
-![1](/images/gc.png "1")
+![1](/images/qc.png "1")
