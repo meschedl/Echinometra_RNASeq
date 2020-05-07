@@ -292,7 +292,7 @@ To run all the files have to make a for loop and then have them also uniquely na
 
 ```
 #!/bin/bash
-#SBATCH -t 24:00:00
+#SBATCH -t 48:00:00
 #SBATCH --nodes=1 --ntasks-per-node=1
 #SBATCH --export=NONE
 #SBATCH --mem=20G
@@ -302,12 +302,13 @@ module load Trimmomatic/0.38-Java-1.8
 
 for fastq in *.fastq.gz
 do
-java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.38.jar SE $fastq $fastq.trim.fq.gz ILLUMINACLIP:TruSeq3-SE.fa:2:30:10 SLIDINGWINDOW:4:5  LEADING:5 TRAILING:5 MINLEN:40
+java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.38.jar SE $fastq $fastq.trim.fq.gz ILLUMINACLIP:TruSeq3-SE.fa:2:30:10 HEADCROP:11 SLIDINGWINDOW:4:5 LEADING:5 TRAILING:5 MINLEN:40
 
 done
 ```
-Submitted batch job 1119660
+Submitted batch job 1121787
 
+## had forgotten head crop
 
 Now just to check I want to get a multiqc report for the trimmed files. Only the EL files are done being trimmed so I start with those. They were moved to the trimmed-data/ directory, then I made them a sub directory.
 ```
@@ -317,14 +318,43 @@ mv *.fq.gz EL-trimmed/
 
 Make a job to run fastQC on them.
 
+`nano fastqc.sh`
+
 ```
 #!/bin/bash
 #SBATCH -t 2:00:00
 #SBATCH --nodes=1 --ntasks-per-node=1
 #SBATCH --export=NONE
-#SBATCH -D /data/pradalab/meschedl/Echinometra/trimmed-data/EL-trimmed/
+#SBATCH -D /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/
 
 module load FastQC/0.11.5-Java-1.8.0_92
 
 fastqc EL_*
 ```
+
+run multiqc
+```
+module load MultiQC/1.7-foss-2018b-Python-2.7.15
+
+multiqc *fastqc.zip
+```
+
+`scp meschedl@bluewaves.uri.edu:/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/multiqc_report.html /Users/maggieschedl/Desktop/URI/Prada/Echinometra_RNASeq`
+
+
+### Screenshots of MultiQC Report of EL Trimmed data
+
+**Sequence Duplication**  
+![1](/images/seq-dup "1")
+
+**Per-Base Quality Score**
+![1](/images/qual-score.png "1")
+
+**Per Sequence Quality Score**
+![1](/images/per-seq.png "1")
+
+**Per Base Sequence Content**
+![1](/images/seq-content.png "1")
+
+**GC Content**
+![1](/images/gc.png "1")

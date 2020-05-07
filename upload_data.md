@@ -16,3 +16,6 @@ scp -r /volumes/MES_Passport/Project_Sequences/HY_* meschedl@bluewaves:/data/pra
 scp -r /volumes/MES_Passport/Project_Sequences/EV_* meschedl@bluewaves:/data/pradalab/meschedl/Echinometra/
 scp -r /volumes/MES_Passport/Project_Sequences/EL_* meschedl@bluewaves:/data/pradalab/meschedl/Echinometra/
 ```
+
+
+scp /volumes/MES_Passport/SPU_peptide.fasta meschedl@bluewaves:/data/pradalab/meschedl/Echinometra/
