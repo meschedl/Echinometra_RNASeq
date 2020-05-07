@@ -17,5 +17,6 @@ scp -r /volumes/MES_Passport/Project_Sequences/EV_* meschedl@bluewaves:/data/pra
 scp -r /volumes/MES_Passport/Project_Sequences/EL_* meschedl@bluewaves:/data/pradalab/meschedl/Echinometra/
 ```
 
+Upload S. purpuratus protein sequence to Bluewaves
 
-scp /volumes/MES_Passport/SPU_peptide.fasta meschedl@bluewaves:/data/pradalab/meschedl/Echinometra/
+`scp /volumes/MES_Passport/SPU_peptide.fasta meschedl@bluewaves:/data/pradalab/meschedl/Echinometra/`
