@@ -80,7 +80,7 @@ data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Or
 
 Comparisson file between EL and SPU is called LORF_EL90.pep__v__SPU_peptide.tsv.  
 Count number of lines (should be number of orthologs):  
-`wc -l LORF_EL90.pep__v__SPU_peptide.tsv`
+`wc -l LORF_EL90.pep__v__SPU_peptide.tsv`  
 **13012 LORF_EL90.pep__v__SPU_peptide.tsv**
 
 There is also a SPU_peptide__v__LORF_EL90.pep.tsv file that has the same number of lines
