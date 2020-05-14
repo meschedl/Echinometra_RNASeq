@@ -72,3 +72,5 @@ orthofinder.py -f ./Fastas/ -t 10
 `sbatch OrthoEL.sh`
 
 Submitted job 1130084
+
+Results are in /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1
