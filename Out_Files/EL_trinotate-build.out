@@ -1,0 +1,133 @@
+* Running CMD: wget "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz"
+--2020-05-13 10:30:36--  ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz
+           => “uniprot_sprot.dat.gz”
+Resolving ftp.uniprot.org... 141.161.180.197
+Connecting to ftp.uniprot.org|141.161.180.197|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /pub/databases/uniprot/current_release/knowledgebase/complete ... done.
+==> SIZE uniprot_sprot.dat.gz ... 589192693
+==> PASV ... done.    ==> RETR uniprot_sprot.dat.gz ... done.
+Length: 589192693 (562M) (unauthoritative)
+
+100%[===========================================================================================================================>] 589,192,693 14.2M/s   in 40s
+
+2020-05-13 10:31:16 (14.1 MB/s) - “uniprot_sprot.dat.gz” saved [589192693]
+
+* Running CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/EMBL_swissprot_parser.pl uniprot_sprot.dat.gz Trinotate
+[562000]    * Running CMD: mv uniprot_sprot.dat.gz.pep uniprot_sprot.pep
+* Running CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/EMBL_dat_to_Trinotate_sqlite_resourceDB.pl --sqlite Trinotate.sqlite --create
+CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/init_Trinotate_sqlite_db.pl --sqlite Trinotate.sqlite
+-done creating database Trinotate.sqlite
+
+* Running CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/EMBL_dat_to_Trinotate_sqlite_resourceDB.pl --sqlite Trinotate.sqlite --uniprot_index Trinotate.UniprotIndex
+CMD: echo "pragma journal_mode=memory;
+pragma synchronous=0;
+pragma cache_size=4000000;
+.mode tabs
+.import Trinotate.UniprotIndex UniprotIndex" | sqlite3 Trinotate.sqlite
+memory
+* Running CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/EMBL_dat_to_Trinotate_sqlite_resourceDB.pl --sqlite Trinotate.sqlite --taxonomy_index Trinotate.TaxonomyIndex
+CMD: echo "pragma journal_mode=memory;
+pragma synchronous=0;
+pragma cache_size=4000000;
+.mode tabs
+.import Trinotate.TaxonomyIndex TaxonomyIndex" | sqlite3 Trinotate.sqlite
+memory
+* Running CMD: wget "http://eggnogdb.embl.de/download/eggnog_4.5/data/NOG/NOG.annotations.tsv.gz"
+--2020-05-13 10:36:04--  http://eggnogdb.embl.de/download/eggnog_4.5/data/NOG/NOG.annotations.tsv.gz
+Resolving eggnogdb.embl.de... 194.94.44.170
+Connecting to eggnogdb.embl.de|194.94.44.170|:80... connected.
+HTTP request sent, awaiting response... 302 Moved Temporarily
+Location: http://eggnog5.embl.de/download/eggnog_4.5/data/NOG/NOG.annotations.tsv.gz [following]
+--2020-05-13 10:36:06--  http://eggnog5.embl.de/download/eggnog_4.5/data/NOG/NOG.annotations.tsv.gz
+Resolving eggnog5.embl.de... 194.94.44.170
+Reusing existing connection to eggnogdb.embl.de:80.
+HTTP request sent, awaiting response... 200 OK
+Length: 1911409 (1.8M) [application/octet-stream]
+Saving to: “NOG.annotations.tsv.gz”
+
+100%[===========================================================================================================================>] 1,911,409    356K/s   in 5.5s
+
+2020-05-13 10:36:13 (339 KB/s) - “NOG.annotations.tsv.gz” saved [1911409/1911409]
+
+* Running CMD: gunzip -c NOG.annotations.tsv.gz | /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/print.pl 1 5 > NOG.annotations.tsv.gz.bulk_load
+* Running CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/EMBL_dat_to_Trinotate_sqlite_resourceDB.pl --sqlite Trinotate.sqlite --eggnog NOG.annotations.tsv.gz.bulk_load
+CMD: echo "pragma journal_mode=memory;
+pragma synchronous=0;
+pragma cache_size=4000000;
+.mode tabs
+.import NOG.annotations.tsv.gz.bulk_load eggNOGIndex" | sqlite3 Trinotate.sqlite
+memory
+* Running CMD: wget "http://purl.obolibrary.org/obo/go/go-basic.obo"
+--2020-05-13 10:36:15--  http://purl.obolibrary.org/obo/go/go-basic.obo
+Resolving purl.obolibrary.org... 52.3.123.63
+Connecting to purl.obolibrary.org|52.3.123.63|:80... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: http://current.geneontology.org/ontology/go-basic.obo [following]
+--2020-05-13 10:36:15--  http://current.geneontology.org/ontology/go-basic.obo
+Resolving current.geneontology.org... 13.225.217.208, 13.225.217.70, 13.225.217.160, ...
+Connecting to current.geneontology.org|13.225.217.208|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 31200568 (30M) [text/obo]
+Saving to: “go-basic.obo”
+
+100%[===========================================================================================================================>] 31,200,568  18.5M/s   in 1.6s
+
+2020-05-13 10:36:17 (18.5 MB/s) - “go-basic.obo” saved [31200568/31200568]
+
+* Running CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/obo_to_tab.pl go-basic.obo > go-basic.obo.tab
+* Running CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/EMBL_dat_to_Trinotate_sqlite_resourceDB.pl --sqlite Trinotate.sqlite --go_obo_tab go-basic.obo.tab
+CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/obo_tab_to_sqlite_db.pl Trinotate.sqlite go-basic.obo.tab
+[47000]
+
+done.
+
+* Running CMD: wget "ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz"
+--2020-05-13 10:36:30--  ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
+           => “Pfam-A.hmm.gz”
+Resolving ftp.ebi.ac.uk... 193.62.193.138
+Connecting to ftp.ebi.ac.uk|193.62.193.138|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /pub/databases/Pfam/current_release ... done.
+==> SIZE Pfam-A.hmm.gz ... 270995712
+==> PASV ... done.    ==> RETR Pfam-A.hmm.gz ... done.
+Length: 270995712 (258M) (unauthoritative)
+
+100%[===========================================================================================================================>] 270,995,712 33.5M/s   in 9.0s
+
+2020-05-13 10:36:40 (28.7 MB/s) - “Pfam-A.hmm.gz” saved [270995712]
+
+* Running CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/PFAM_dat_parser.pl Pfam-A.hmm.gz
+[17900]  * Running CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/EMBL_dat_to_Trinotate_sqlite_resourceDB.pl --sqlite Trinotate.sqlite --pfam Pfam-A.hmm.gz.pfam_sqlite_bulk_load
+CMD: echo "pragma journal_mode=memory;
+pragma synchronous=0;
+pragma cache_size=4000000;
+.mode tabs
+.import Pfam-A.hmm.gz.pfam_sqlite_bulk_load PFAMreference" | sqlite3 Trinotate.sqlite
+memory
+* Running CMD: wget "ftp://ftp.geneontology.org/pub/go/external2go/pfam2go"
+--2020-05-13 10:36:57--  ftp://ftp.geneontology.org/pub/go/external2go/pfam2go
+           => “pfam2go”
+Resolving ftp.geneontology.org... 171.67.205.83
+Connecting to ftp.geneontology.org|171.67.205.83|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /pub/go/external2go ... done.
+==> SIZE pfam2go ... 700762
+==> PASV ... done.    ==> RETR pfam2go ... done.
+Length: 700762 (684K) (unauthoritative)
+
+100%[===========================================================================================================================>] 700,762      527K/s   in 1.3s
+
+2020-05-13 10:37:00 (527 KB/s) - “pfam2go” saved [700762]
+
+* Running CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/PFAMtoGoParser.pl pfam2go > pfam2go.tab
+* Running CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/admin/util/EMBL_dat_to_Trinotate_sqlite_resourceDB.pl --sqlite Trinotate.sqlite --pfam2go pfam2go.tab
+CMD: echo "pragma journal_mode=memory;
+pragma synchronous=0;
+pragma cache_size=4000000;
+.mode tabs
+.import pfam2go.tab pfam2go" | sqlite3 Trinotate.sqlite
+memory

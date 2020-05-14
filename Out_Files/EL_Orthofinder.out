@@ -1,0 +1,175 @@
+
+OrthoFinder version 2.3.3 Copyright (C) 2014 David Emms
+
+2020-05-11 11:28:12 : Starting OrthoFinder
+10 thread(s) for highly parallel tasks (BLAST searches etc.)
+1 thread(s) for OrthoFinder algorithm
+
+Checking required programs are installed
+----------------------------------------
+Test can run "mcl -h" - ok
+Test can run "fastme -i /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/SimpleTest.phy -o /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/SimpleTest.tre" - ok
+
+Dividing up work for BLAST for parallel processing
+--------------------------------------------------
+2020-05-11 11:28:15 : Creating diamond database 1 of 2
+2020-05-11 11:28:16 : Creating diamond database 2 of 2
+
+Running diamond all-versus-all
+------------------------------
+Using 10 thread(s)
+2020-05-11 11:28:17 : This may take some time....
+
+WARNING: program called by OrthoFinder produced output to stderr
+
+Command: diamond blastp -d /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/diamondDBSpecies1 -q /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/Species0.fa -o /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/Blast0_1.txt --more-sensitive -p 1 --quiet -e 0.001 --compress 1
+
+stdout
+------
+
+stderr
+------
+diamond v0.9.25.126 | by Benjamin Buchfink <buchfink@gmail.com>
+Licensed under the GNU GPL <https://www.gnu.org/licenses/gpl.txt>
+Check http://github.com/bbuchfink/diamond for updates.
+
+
+
+WARNING: program called by OrthoFinder produced output to stderr
+
+Command: diamond blastp -d /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/diamondDBSpecies0 -q /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/Species1.fa -o /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/Blast1_0.txt --more-sensitive -p 1 --quiet -e 0.001 --compress 1
+
+stdout
+------
+
+stderr
+------
+diamond v0.9.25.126 | by Benjamin Buchfink <buchfink@gmail.com>
+Licensed under the GNU GPL <https://www.gnu.org/licenses/gpl.txt>
+Check http://github.com/bbuchfink/diamond for updates.
+
+
+
+WARNING: program called by OrthoFinder produced output to stderr
+
+Command: diamond blastp -d /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/diamondDBSpecies0 -q /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/Species0.fa -o /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/Blast0_0.txt --more-sensitive -p 1 --quiet -e 0.001 --compress 1
+
+stdout
+------
+
+stderr
+------
+diamond v0.9.25.126 | by Benjamin Buchfink <buchfink@gmail.com>
+Licensed under the GNU GPL <https://www.gnu.org/licenses/gpl.txt>
+Check http://github.com/bbuchfink/diamond for updates.
+
+
+
+WARNING: program called by OrthoFinder produced output to stderr
+
+Command: diamond blastp -d /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/diamondDBSpecies1 -q /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/Species1.fa -o /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/WorkingDirectory/Blast1_1.txt --more-sensitive -p 1 --quiet -e 0.001 --compress 1
+
+stdout
+------
+
+stderr
+------
+diamond v0.9.25.126 | by Benjamin Buchfink <buchfink@gmail.com>
+Licensed under the GNU GPL <https://www.gnu.org/licenses/gpl.txt>
+Check http://github.com/bbuchfink/diamond for updates.
+
+
+2020-05-11 11:34:18 : Done all-versus-all sequence search
+
+Running OrthoFinder algorithm
+-----------------------------
+2020-05-11 11:34:18 : Initial processing of each species
+2020-05-11 11:34:34 : Initial processing of species 0 complete
+2020-05-11 11:34:51 : Initial processing of species 1 complete
+2020-05-11 11:34:55 : Connected putatitive homologs
+2020-05-11 11:35:26 : Ran MCL
+
+Writing orthogroups to file
+---------------------------
+Orthogroups have been written to tab-delimited files:
+   /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/Orthogroups/Orthogroups.tsv
+   /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/Orthogroups/Orthogroups.txt (OrthoMCL format)
+   /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/Orthogroups/Orthogroups_UnassignedGenes.tsv
+Sequences for orthogroups:
+   /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/Orthogroup_Sequences/
+
+2020-05-11 12:15:11 : Done orthogroups
+
+Analysing Orthogroups
+=====================
+
+Calculating gene distances
+--------------------------
+2020-05-11 12:16:17 : Done 0 of 1004
+2020-05-11 12:16:44 : Done 100 of 1004
+2020-05-11 12:17:12 : Done 200 of 1004
+2020-05-11 12:17:32 : Done 300 of 1004
+2020-05-11 12:17:44 : Done 400 of 1004
+2020-05-11 12:17:56 : Done 500 of 1004
+2020-05-11 12:18:08 : Done 600 of 1004
+2020-05-11 12:18:22 : Done 700 of 1004
+2020-05-11 12:18:35 : Done 800 of 1004
+2020-05-11 12:18:49 : Done 900 of 1004
+2020-05-11 12:19:03 : Done 1000 of 1004
+2020-05-11 11:35:00 : Written final scores for species 0 to graph file
+2020-05-11 11:35:02 : Written final scores for species 1 to graph file
+2020-05-11 12:16:17 : Done
+
+Inferring gene and species trees
+--------------------------------
+
+Reconciling gene trees and species tree
+---------------------------------------
+2020-05-11 12:19:53 : Starting Recon and orthologues
+2020-05-11 12:19:54 : Starting OF Orthologues
+2020-05-11 12:19:55 : Done 0 of 1004
+2020-05-11 12:20:02 : Done 100 of 1004
+2020-05-11 12:20:06 : Done 200 of 1004
+2020-05-11 12:20:11 : Done 300 of 1004
+2020-05-11 12:20:20 : Done 400 of 1004
+2020-05-11 12:20:28 : Done 500 of 1004
+2020-05-11 12:20:35 : Done 600 of 1004
+2020-05-11 12:20:44 : Done 700 of 1004
+2020-05-11 12:20:51 : Done 800 of 1004
+2020-05-11 12:20:58 : Done 900 of 1004
+2020-05-11 12:21:06 : Done 1000 of 1004
+2020-05-11 12:21:07 : Done OF Orthologues
+2020-05-11 12:21:09 : Done Recon
+
+Writing results files
+=====================
+2020-05-11 12:23:33 : Done orthologues
+Orthogroups have been written to tab-delimited files:
+   /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/Orthogroups/Orthogroups.tsv
+   /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/Orthogroups/Orthogroups.txt (OrthoMCL format)
+   /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/Orthogroups/Orthogroups_UnassignedGenes.tsv
+Sequences for orthogroups:
+   /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/Orthogroup_Sequences/
+
+
+Gene trees:
+   /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/Gene_Trees/
+
+Rooted species tree:
+   /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/Species_Tree/SpeciesTree_rooted.txt
+
+Species-by-species orthologues directory:
+   /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/Orthologues/
+
+Orthogroup statistics:
+   Statistics_PerSpecies.tsv   Statistics_Overall.tsv   Orthogroups_SpeciesOverlaps.tsv
+
+OrthoFinder assigned 31234 genes (39.2% of total) to 12807 orthogroups. Fifty percent of all genes were in orthogroups with 1 or more genes (G50 was 1) and were contained in the largest 21429 orthogroups (O50 was 21429). There were 12772 orthogroups with all species present and 9773 of these consisted entirely of single-copy genes.
+
+CITATION:
+ When publishing work that uses OrthoFinder please cite:
+ Emms D.M. & Kelly S. (2015), Genome Biology 16:157
+
+ If you use the species tree in your work then please also cite:
+ Emms D.M. & Kelly S. (2017), MBE 34(12): 3267-3278
+ Emms D.M. & Kelly S. (2018), bioRxiv https://doi.org/10.1101/267914
