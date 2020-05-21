@@ -75,7 +75,7 @@ Submitted job 1130084
 
 Results are in /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1
 
-Orthologs are in Orthologs directory 
+Orthologs are in Orthologs directory
 data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/Transdecoder/Orthofinder/Fastas/OrthoFinder/Results_May11_1/Orthologues/Orthologues_LORF_EL90.pep
 
 Comparisson file between EL and SPU is called LORF_EL90.pep__v__SPU_peptide.tsv.  
@@ -84,3 +84,48 @@ Count number of lines (should be number of orthologs):
 **13012 LORF_EL90.pep__v__SPU_peptide.tsv**
 
 There is also a SPU_peptide__v__LORF_EL90.pep.tsv file that has the same number of lines
+
+
+I want to take the trinity transcripts in the 2nd column of this file and only keep those in the cut down transcriptome file (cdhit90El.Trinity.fasta)
+
+Cut the second column into a new file.  
+`cut -f2 LORF_EL90.pep__v__SPU_peptide.tsv > EL_otholog_transcripts.txt`
+
+There are multiple transcripts in a line separated by commas, hopefully this will work for filtering the assembly file.
+
+Copy to directory with cd-hit fasta.  
+`cp EL_otholog_transcripts.txt /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/`
+
+
+Using [BBMap script](https://github.com/BioInfoTools/BBMap/blob/master/sh/filterbyname.sh) filterbyname.sh to filter the assembly file to only ortholog transcripts.
+
+Options:  
+in2 and out2 are for paired reads and are optional  
+include=f           Set to 'true' to include the filtered names rather than excluding them.  
+substring=f         Allow one name to be a substring of the other, rather than a full match.
+                         f: No substring matching.  
+                         t: Bidirectional substring matching.  
+                         header: Allow input read headers to be substrings of names in list.  
+                         name: Allow names in list to be substrings of input read headers.    
+For improved speed, add 'usejni=t' to the command line of BBMap tools which support the use of the compiled jni C code.
+
+`nano ortho_filter.sh`
+
+```
+#!/bin/bash
+#SBATCH -t 200:00:00
+#SBATCH --nodes=1 --ntasks-per-node=1
+#SBATCH --account=pradalab
+#SBATCH --export=NONE
+#SBATCH -D /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/EL-CD/
+
+module load BBMap/38.81-foss-2018b-Java-1.8
+
+filterbyname.sh in=cdhit90El.Trinity.fasta names=EL_otholog_transcripts.txt out=EL_ortholog_filtered.fasta include=t substring=t usejni=t
+```
+Submitted batch job 1133459
+
+Once done the ortholog filtered assembly file is EL_ortholog_filtered.fasta.  
+Count the number of transcripts:  
+`cat EL_ortholog_filtered.fasta | grep '>' | wc -l`  
+**15474**
