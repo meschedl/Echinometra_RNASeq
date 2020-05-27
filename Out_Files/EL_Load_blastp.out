@@ -1,0 +1,10 @@
+CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/util/trinotateSeqLoader/Trinotate_BLAST_loader.pl --sqlite Trinotate.sqlite --outfmt6 ELblastp.outfmt6 --prog blastp --dbtype Swissprot
+CMD: echo "pragma journal_mode=memory;
+pragma synchronous=0;
+pragma cache_size=4000000;
+.mode tabs
+.import tmp.blast_bulk_load.4397 BlastDbase" | sqlite3 Trinotate.sqlite
+memory
+
+
+BlastDbase loading complete..

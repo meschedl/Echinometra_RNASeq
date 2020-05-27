@@ -1,0 +1,7 @@
+CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/util/trinotateSeqLoader/Trinotate_PFAM_loader.pl --sqlite Trinotate.sqlite --pfam TrinotatePFAM.out
+CMD: echo "pragma journal_mode=memory;
+pragma synchronous=0;
+pragma cache_size=4000000;
+.mode tabs
+.import tmp.pfam_bulk_load.4466 HMMERDbase" | sqlite3 Trinotate.sqlite
+memory

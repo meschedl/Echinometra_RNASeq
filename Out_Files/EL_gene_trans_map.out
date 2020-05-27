@@ -1,0 +1,24 @@
+CMD: /net/clusterhn.cluster.com/opt/software/Trinotate/3.2.1/util/trinotateSeqLoader/TrinotateSeqLoader.pl --sqlite Trinotate.sqlite --gene_trans_map ELCD.fasta.gene_trans_map --transcript_fasta cdhit90El.Trinity.fasta --transdecoder_pep LORF_EL90.pep.fasta --bulk_load
+-parsing gene/trans map file.... done.
+-loading Transcripts.
+[42500]
+[107300]
+done.
+-loading ORFs.
+[100000]
+done.
+
+CMD: echo "pragma journal_mode=memory;
+pragma synchronous=0;
+pragma cache_size=4000000;
+.mode tabs
+.import tmp.Transcript.bulk_load Transcript" | sqlite3 Trinotate.sqlite
+memory
+CMD: echo "pragma journal_mode=memory;
+pragma synchronous=0;
+pragma cache_size=4000000;
+.mode tabs
+.import tmp.ORF.bulk_load ORF" | sqlite3 Trinotate.sqlite
+memory
+
+Loading complete..
