@@ -1,0 +1,165 @@
+---
+title: "El-annoation"
+author: "Maggie Schedl"
+date: "5/27/2020"
+output: github_document
+---
+
+```{r}
+# check working project directory
+getwd()
+```
+
+```{r}
+#libraries
+library(naniar)
+library(tidyverse)
+library(dplyr)
+```
+
+Read in Trinotate Report
+```{r}
+#saved trinotate report as a csv file
+EL.trinotate.report <- read.csv("EL_trinotate_annotation_report.csv", header = TRUE)
+head(EL.trinotate.report)
+# the way this has the BLAST or pFAM information is a little weird
+# Don't know how to deal with this yet
+
+EL.trinotate.report[1:15,]
+```
+
+
+Read in the file from Orthofinder that has orthogroups and transcripts from each spcies
+
+```{r}
+orthologs <- read.delim("LORF_EL90.pep__v__SPU_peptide.tsv", sep = "\t")
+head(orthologs)
+orthologs[1:15,]
+# 13,011 orthogroups 
+# deliminated in a weird way, these need to be separated
+```
+
+First split the two species out of the orthogroups file but keep the orthogroup column
+```{r}
+EL.orthologs <- orthologs %>% 
+  select(1,2)
+head(EL.orthologs)
+```
+
+ok this is actually better, I can make all the columns into rows with their ortho group first, then remove the .p#s
+https://tidyr.tidyverse.org/reference/separate_rows.html
+
+Separate the comma deliminated transcripts into rows, and keep the same orthogroup. Then get rid of characters on the end of transcripts so they can match the trinotate file. 
+```{r}
+# collapse df in to one column multiple rows instead of one row multiple columns
+tr.orthogroups <- separate_rows(EL.orthologs, "LORF_EL90.pep", sep = ",", convert = FALSE)
+head(tr.orthogroups)
+# remove extra characters of .p#s
+tr.orthogroups.2 <-mapply(gsub, pattern = ".p1", replacement = "", tr.orthogroups)
+tr.orthogroups.2 <- as.data.frame(tr.orthogroups.2)
+tr.orthogroups.2[1:15,]
+# I don't know why this always removes the column names but it does
+# remove .p2
+tr.orthogroups.2 <-mapply(gsub, pattern = ".p2", replacement = "", tr.orthogroups.2)
+tr.orthogroups.2 <- as.data.frame(tr.orthogroups.2)
+# remove .p3
+tr.orthogroups.2 <-mapply(gsub, pattern = ".p3", replacement = "", tr.orthogroups.2)
+tr.orthogroups.2 <- as.data.frame(tr.orthogroups.2)
+# remove .p4
+tr.orthogroups.2 <-mapply(gsub, pattern = ".p4", replacement = "", tr.orthogroups.2)
+tr.orthogroups.2 <- as.data.frame(tr.orthogroups.2)
+# remove .p5
+tr.orthogroups.2 <-mapply(gsub, pattern = ".p5", replacement = "", tr.orthogroups.2)
+tr.orthogroups.2 <- as.data.frame(tr.orthogroups.2)
+# add column names
+colnames(tr.orthogroups.2) <- c("Orthogroup", "transcript_id")
+tr.orthogroups.2[400:415,]
+```
+
+Separate out the SPU orthologs and separate the rows in the same way.
+```{r}
+SPU.orthologs <- orthologs %>% 
+  select(1,3)
+head(SPU.orthologs)
+# use separate rows on this one
+SPU.orthogroups <- separate_rows(SPU.orthologs, "SPU_peptide", sep = ",", convert = FALSE)
+#change column nmae to match annotation file
+colnames(SPU.orthogroups) <- c("Orthogroup", "spu_id")
+head(SPU.orthogroups)
+# I don't think there are any extra characters in these strings
+```
+ 
+I think a good way to go would be to only be looking for what I need, which are things that match up with the blanks in the SPU annoation file. 
+First want to see what in this dataset doesn't have any annotation
+
+```{r}
+# read in annotation file
+SPU.annot <- read.delim("gene_info_table.txt", sep = "\t")
+head(SPU.annot)
+
+SPU.annot[1:15,]
+# get column names from read me file in build8 zip download from echinobase 
+colnames(SPU.annot) <- c("glean_id", "spu_id", "annotator", "gene_model_check", "aditional_edivence", "family_member", "common_name", "synonyms", "best_genbank_hit", "ortholog_homolog", "group_coordinator", "difficult_annotation_categories", "old_common_name", "note", "manual_anno", "annotation_type", "overlap_gene", "whl_id", "curator")
+SPU.annot[1:15,]
+```
+
+Cut down on the columns
+```{r}
+SPU.annot.t <- SPU.annot[,c(2,6:9)]
+head(SPU.annot.t)
+```
+Waht to know what transcripts don't have any anotations. First make the "none" strings into NAs
+```{r}
+SPU.annot.t[ SPU.annot.t == "none" ] <- NA
+head(SPU.annot.t)
+```
+
+Then filter the dataset by rows that have NAs in all columns
+```{r}
+SPU.no.annot <- SPU.annot.t[is.na(SPU.annot.t$family_member) & is.na(SPU.annot.t$common_name) & is.na(SPU.annot.t$synonyms) & is.na(SPU.annot.t$best_genbank_hit),]
+dim(SPU.no.annot)
+# 7477 transcripts with no identification 
+SPU.no.annot[1:15,]
+```
+And there are ~15,000 transcripts that are in orthogroups with EL 
+
+Now want to merge the SPU orthogroups file with the list of transcripts with no anotations. The have the same column spu_id so they can be merged by only the ids that are present in both data frames.
+```{r}
+orthogroups.spu.noannot.merge <- merge(SPU.no.annot, SPU.orthogroups, by= "spu_id", sort = TRUE)
+orthogroups.spu.noannot.merge[1:15,]
+dim(orthogroups.spu.noannot.merge)
+# 2162
+# Looking good to find new anotations 
+```
+
+I no longer need the empty columns in the middle so select those out.
+
+```{r}
+# first select only SPU and Ortholog columns
+Ortho.noannot <- orthogroups.spu.noannot.merge %>% 
+  select(1,6)
+head(Ortho.noannot)
+```
+
+Do the same thing as above but for the Trinotate report. Merge in the orhogroups by their transcript_id to the annotation report. Limiting the rows to only transcripts in orthogroups.
+
+```{r}
+# in EL.trinotate.report transcript_id matches same in tr.orthogroups.2
+orthogroups.trinotate.merge <- merge(EL.trinotate.report, tr.orthogroups.2, by= "transcript_id", sort = TRUE)
+orthogroups.trinotate.merge[1:15,]
+ 
+```
+
+Now both merged dataframes should have orthogroups column in common and so they can be merged together!
+
+```{r}
+missing.SPU.EL.annots <- merge(orthogroups.trinotate.merge, Ortho.noannot, by= "Orthogroup", sort = TRUE)
+dim(missing.SPU.EL.annots)
+# 3455 
+# not necessarily surprising that this is more because there were 
+missing.SPU.EL.annots[1:15,]
+```
+
+Now the question is what to do with this because the anotations are messy and do not match the SPU anotation file. And they are "binned" by orthogroup, and are not a one to one with any of the transcripts. 
+
+Because the only way to make connections between my transcripts and the SPU anotations is by othrogroup, I need to think of a way to collapse all anotations into orthogroups. 

@@ -1,0 +1,33 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1591204780113.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "AD0F3DF9",
+    "lastKnownWriteTime" : 3,
+    "last_content_update" : 1591204780113,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "2543ADE9",
+        "caption" : "tr.orthologs.s4",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=tr.orthologs.s4&cache_key=2543ADE9",
+        "displayedObservations" : 13011,
+        "environment" : "",
+        "expression" : "tr.orthologs.s4",
+        "object" : "tr.orthologs.s4",
+        "preview" : 0,
+        "totalObservations" : 13011,
+        "variables" : 19
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}
