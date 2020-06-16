@@ -1,0 +1,112 @@
+---
+title: "EL-DESeq2"
+author: "Maggie Schedl"
+date: "6/9/2020"
+output: html_document
+---
+
+```{r}
+library(DESeq2)
+# library(apeglm) can't use this one
+library(ggplot2)
+# library(vsn) can't use this one
+library(pheatmap)
+library(RColorBrewer)
+# library(genefilter) can't use this one
+library(reshape2)
+library(rsconnect)
+library(gplots)
+library(ashr)
+# library(limma) can't use this one
+library(dplyr)
+library(tidyr)
+library(dlookr)
+library(tximport)
+```
+
+
+DESeqDataSetFromMatrix
+http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
+
+```{r}
+# input sample/treatment info
+Sample_info <- read.csv("el-treatment-data.csv", header=TRUE, sep=",")
+print(Sample_info)
+
+```
+
+Shouldn't be using the abundance estimation method from trinity. Should be using tximport program, that takes the RSEM results from each sample
+"Import and summarize transcript-level abundance estimates for transcript- and gene-level analysis"
+
+
+https://bioc.ism.ac.jp/packages/3.5/bioc/vignettes/tximport/inst/doc/tximport.html#import-transcript-level-estimates
+https://bioconductor.org/packages/devel/bioc/vignettes/tximport/inst/doc/tximport.html#Import_transcript-level_estimates
+
+Have copy to my computer all of the RSEM.genes.results files because this is what it takes 
+
+need "files" a character vector of filenames for the transcript-level abundances
+
+```{r}
+
+files <- list.files(path = ".", pattern = ".genes.results")
+names(files) <- c("29_4cell_rep_1", "29_4cell_rep_2", "29_4cell_rep_3", "29_blast_rep_1", "29_blast_rep_2", "29_blast_rep_3", "29_gast_rep_1", "29_gast_rep_2", "29_gast_rep_3", "29_larv_rep_1", "29_larv_rep_2", "29_larv_rep_3", "33_4cell_rep_1", "33_4cell_rep_2", "33_4cell_rep_3", "33_blast_rep_1", "33_blast_rep_2", "33_blast_rep_3", "33_gast_rep_1", "33_gast_rep_2", "33_gast_rep_3", "33_larv_rep_1", "33_larv_rep_2", "33_larv_rep_3", "eggs_rep_1", "eggs_rep_2", "eggs_rep_3")
+txi.rsem <- tximport(files, type = "rsem")
+head(txi.rsem$counts)
+```
+Yay these are integers1
+
+
+Now I want to use DESeqDataSetFromTximport to make the DESeq object 
+
+```{r}
+
+Sample_info$Stage = factor(x = Sample_info$Stage,levels = c('4cell','blastula', "gastrula", "larvae", "eggs"))
+ddsTxi_Stage <- DESeqDataSetFromTximport(txi.rsem,
+                                   colData = Sample_info,
+                                   design = ~ Stage)
+```
+
+
+Can pre-filter matrix to get rid of low-expressed genes 
+```{r}
+# then I need to filter out low count transcripts
+# can't do pover a filtering because this is too new a version of R
+# however I can make an educated guess for what I should do with filtering
+# there are 27 samples
+# 3 or 6 in each life stage
+# lets go with 6 
+# want at least 3 counts in six
+# so 3*6 is 18
+# DESeq manual says a good count to filter by is 10 so this seems reseaonable 
+keep <- rowSums(counts(ddsTxi_Stage)) >= 18
+length(keep[keep==FALSE])
+# this removes 25 genes, not sure if this is a lot or not
+ddsTxi_Stage_filt <- ddsTxi_Stage[keep,]
+
+```
+
+Run the differential expression model on the filtered life stage design
+```{r}
+Stage_deseq <- DESeq(ddsTxi_Stage_filt)
+
+```
+
+# general PCAs of the data
+# using varience stablizing transformations 
+```{r}
+Stage_deseqvst <- vst(Stage_deseq, blind = FALSE)
+plotPCA(Stage_deseqvst, intgroup=c("Stage"))
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
