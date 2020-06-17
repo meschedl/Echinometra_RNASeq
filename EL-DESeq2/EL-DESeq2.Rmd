@@ -2,7 +2,7 @@
 title: "EL-DESeq2"
 author: "Maggie Schedl"
 date: "6/9/2020"
-output: html_document
+output: github_document
 ---
 
 ```{r}
