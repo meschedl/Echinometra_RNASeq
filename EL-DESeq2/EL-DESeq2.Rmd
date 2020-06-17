@@ -58,16 +58,151 @@ Yay these are integers1
 
 Now I want to use DESeqDataSetFromTximport to make the DESeq object 
 
-```{r}
+not able to do "intereaction effect" in this part of the design because eggs are only in the ambient treatment
 
+```{r}
+# Set up for complete combinatorial design 
 Sample_info$Stage = factor(x = Sample_info$Stage,levels = c('4cell','blastula', "gastrula", "larvae", "eggs"))
+Sample_info$Temp = factor(x = Sample_info$Temp, levels = c("ambient", "high"))
+ddsTxi_Comb <- DESeqDataSetFromTximport(txi.rsem,
+                                   colData = Sample_info,
+                                   design = ~ Stage + Temp)
+```
+
+
+Can pre-filter matrix to get rid of low-expressed genes 
+```{r}
+# then I need to filter out low count transcripts
+# can't do pover a filtering because this is too new a version of R
+# however I can make an educated guess for what I should do with filtering
+# there are 27 samples
+# 3 or 6 in each life stage
+# lets go with 6 
+# want at least 3 counts in six
+# so 3*6 is 18
+# DESeq manual says a good count to filter by is 10 so this seems reseaonable 
+keep <- rowSums(counts(ddsTxi_Comb)) >= 18
+length(keep[keep==FALSE])
+# this removes 25 genes, not sure if this is a lot or not
+ddsTxi_Comb_filt <- ddsTxi_Comb[keep,]
+
+```
+add interaction this way? from DESEq2 vingette
+```{r}
+ddsTxi_Comb_filt$group <- factor(paste0(ddsTxi_Comb_filt$Stage, ddsTxi_Comb_filt$Temp))
+design(ddsTxi_Comb_filt) <- ~ group
+dds <- DESeq(ddsTxi_Comb_filt)
+resultsNames(dds)
+print(dds$group)
+```
+
+All possible results combinations?
+
+```{r}
+# had to use F for 4 if starting the name of results
+BA_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "blastulaambient"))
+GA_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "gastrulaambient"))
+LA_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "larvaeambient"))
+EA_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "eggsambient"))
+FCH_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "4cellhigh"))
+BH_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "blastulahigh"))
+GH_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "gastrulahigh"))
+LH_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "larvaehigh"))
+
+GA_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "gastrulaambient"))
+LA_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "larvaeambient"))
+EA_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "eggsambient"))
+FCH_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "4cellhigh"))
+BH_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "blastulahigh"))
+GH_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "gastrulahigh"))
+LH_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "larvaehigh"))
+
+LA_GA <- results(dds, alpha=0.05, contrast=c("group", "gastrulaambient", "larvaeambient"))
+EA_GA <- results(dds, alpha=0.05, contrast=c("group", "gastrulaambient", "eggsambient"))
+FCH_GA <- results(dds, alpha=0.05, contrast=c("group", "gastrulaambient", "eggsambient"))
+BH_GA <- results(dds, alpha=0.05, contrast=c("group", "gastrulaambient", "blastulahigh"))
+GH_GA <- results(dds, alpha=0.05, contrast=c("group", "gastrulaambient", "gastrulahigh"))
+LH_GA <- results(dds, alpha=0.05, contrast=c("group", "gastrulaambient", "larvaehigh"))
+
+EA_LA <- results(dds, alpha=0.05, contrast=c("group", "larvaeambient", "eggsambient"))
+FCH_LA <- results(dds, alpha=0.05, contrast=c("group", "larvaeambient", "4cellhigh"))
+BH_LA <- results(dds, alpha=0.05, contrast=c("group", "larvaeambient", "blastulahigh"))
+GH_LA <- results(dds, alpha=0.05, contrast=c("group", "larvaeambient", "gastrulahigh"))
+LH_LA <- results(dds, alpha=0.05, contrast=c("group", "larvaeambient", "larvaehigh"))
+
+FCH_EA <- results(dds, alpha=0.05, contrast=c("group", "eggsambient", "4cellhigh"))
+BH_EA <- results(dds, alpha=0.05, contrast=c("group", "eggsambient", "blastulahigh"))
+GH_EA <- results(dds, alpha=0.05, contrast=c("group", "eggsambient", "gastrulahigh"))
+LH_EA <- results(dds, alpha=0.05, contrast=c("group", "eggsambient", "larvaehigh"))
+
+BH_4CH <- results(dds, alpha=0.05, contrast=c("group", "4cellhigh", "blastulahigh"))
+GH_4CH <- results(dds, alpha=0.05, contrast=c("group", "4cellhigh", "gastrulahigh"))
+LH_4CH <- results(dds, alpha=0.05, contrast=c("group", "4cellhigh", "larvaehigh"))
+
+GH_BH <- results(dds, alpha=0.05, contrast=c("group", "blastulahigh", "gastrulahigh"))
+LH_BH <- results(dds, alpha=0.05, contrast=c("group", "blastulahigh", "larvaehigh"))
+
+LH_GH <- results(dds, alpha=0.05, contrast=c("group", "gastrulahigh", "larvaehigh"))
+
+```
+
+Subset all of these to be only the significantly differentially expressed 
+```{r}
+sig_BA_4CA <- subset(BA_4CA, padj<0.05)
+sig_GA_4CA <- subset(GA_4CA, padj<0.05)
+sig_LA_4CA <- subset(LA_4CA, padj<0.05)
+sig_EA_4CA <- subset(EA_4CA, padj<0.05)
+sig_4CH_4CA <- subset(FCH_4CA, padj<0.05)
+sig_BH_4CA <- subset(BH_4CA, padj<0.05)
+sig_GH_4CA <- subset(GH_4CA, padj<0.05)
+sig_LH_4CA <- subset(LH_4CA, padj<0.05)
+
+sig_GA_BA <- subset(GA_BA, padj<0.05)
+sig_LA_BA <- subset(LA_BA, padj<0.05)
+sig_EA_BA <- subset(EA_BA, padj<0.05)
+sig_4CH_BA <- subset(FCH_BA, padj<0.05)
+sig_BH_BA <- subset(BH_BA, padj<0.05)
+sig_GH_BA <- subset(GH_BA, padj<0.05)
+sig_LH_BA <- subset(LH_BA, padj<0.05)
+
+sig_LA_GA <- subset(LA_GA, padj<0.05)
+sig_EA_GA <- subset(EA_GA, padj<0.05)
+sig_4CH_GA <- subset(FCH_GA, padj<0.05)
+sig_BH_GA <- subset(BH_GA, padj<0.05)
+sig_GH_GA <- subset(GH_GA, padj<0.05)
+sig_LH_GA <- subset(LH_GA, padj<0.05)
+
+sig_EA_LA <- subset(EA_LA, padj<0.05)
+sig_4CH_LA <- subset(FCH_LA, padj<0.05)
+sig_BH_LA <- subset(BH_LA, padj<0.05)
+sig_GH_LA <- subset(GH_LA, padj<0.05)
+sig_LH_LA <- subset(LH_LA, padj<0.05)
+
+sig_4CH_EA <- subset(FCH_EA, padj<0.05)
+sig_BH_EA <- subset(BH_EA, padj<0.05)
+sig_GH_EA <- subset(GH_EA, padj<0.05)
+sig_LH_EA <- subset(LH_EA, padj<0.05)
+
+sig_BH_4CH <- subset(BH_4CH, padj<0.05)
+sig_GH_4CH <- subset(GH_4CH, padj<0.05)
+sig_LH_4CH <- subset(LH_4CH, padj<0.05)
+
+sig_GH_BH <- subset(GH_BH, padj<0.05)
+sig_LH_BH <- subset(LH_BH, padj<0.05)
+
+sig_LH_GH <- subset(LH_GH, padj<0.05)
+```
+
+Create just Stage and just Temp Models
+
+Stage
+
+```{r}
 ddsTxi_Stage <- DESeqDataSetFromTximport(txi.rsem,
                                    colData = Sample_info,
                                    design = ~ Stage)
 ```
 
-
-Can pre-filter matrix to get rid of low-expressed genes 
 ```{r}
 # then I need to filter out low count transcripts
 # can't do pover a filtering because this is too new a version of R
@@ -85,22 +220,196 @@ ddsTxi_Stage_filt <- ddsTxi_Stage[keep,]
 
 ```
 
-Run the differential expression model on the filtered life stage design
 ```{r}
-Stage_deseq <- DESeq(ddsTxi_Stage_filt)
+dds_Stage <- DESeq(ddsTxi_Stage_filt)
+
+resultsNames(dds_Stage)
+```
+Get results for all stage comparisons 
+
+```{r}
+Blastula_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula", "4cell"))
+Gastrula_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "gastrula", "4cell"))
+Larvae_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "larvae", "4cell"))
+Eggs_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "eggs", "4cell"))
+
+Blastula_Eggs <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula", "eggs"))
+Gastrula_Eggs <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "gastrula", "eggs"))
+Larvae_Eggs <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "larvae", "eggs"))
+
+Blastula_Larvae <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula", "larvae"))
+Gastrula_Larvae <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "gastrula", "larvae"))
+
+Blastula_Gastrula <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula", "gastrula"))
+```
+
+Subset those to only DEGs
+
+```{r}
+sig_Blastula_4cell <- subset(Blastula_4cell, padj<0.05)
+sig_Gastrula_4cell <- subset(Gastrula_4cell, padj<0.05)
+sig_Larvae_4cell <- subset(Larvae_4cell, padj<0.05)
+sig_Eggs_4cell <- subset(Eggs_4cell, padj<0.05)
+
+sig_Blastula_Eggs <- subset(Blastula_Eggs, padj<0.05)
+sig_Gastrula_Eggs <- subset(Blastula_Eggs, padj<0.05)
+sig_Larvae_Eggs <- subset(Blastula_Eggs, padj<0.05)
+
+sig_Blastula_Larvae <- subset(Blastula_Larvae, padj<0.05)
+sig_Gastrula_Larvae <- subset(Gastrula_Larvae, padj<0.05)
+
+sig_Blastula_Gastrula <- subset(Gastrula_Larvae, padj<0.05)
+```
+
+Temp only 
+```{r}
+ddsTxi_Temp <- DESeqDataSetFromTximport(txi.rsem,
+                                   colData = Sample_info,
+                                   design = ~ Temp)
+```
+```{r}
+# then I need to filter out low count transcripts
+# can't do pover a filtering because this is too new a version of R
+# however I can make an educated guess for what I should do with filtering
+# there are 27 samples
+# 3 or 6 in each life stage
+# lets go with 6 
+# want at least 3 counts in six
+# so 3*10 is 30
+# DESeq manual says a good count to filter by is 10 so this seems reseaonable 
+keep <- rowSums(counts(ddsTxi_Temp)) >=30
+length(keep[keep==FALSE])
+# this removes 114 genes, not sure if this is a lot or not
+ddsTxi_Temp_filt <- ddsTxi_Temp[keep,]
 
 ```
+
+```{r}
+dds_Temp <- DESeq(ddsTxi_Temp_filt)
+
+resultsNames(dds_Temp)
+```
+Only one comparison here
+
+```{r}
+temp_amb_high <- results(dds_Temp, alpha=0.05, contrast=c("Temp", "high", "ambient"))
+summary(temp_amb_high)
+```
+There are no significantly differentially expressed genes for temperature.... 
+
+Overall....
+
+There are some stage-specific DEGs between the treatments, but not all
+
+```{r}
+summary(GH_GA)
+summary(BH_BA)
+summary(LH_LA)
+summary(FCH_4CA)
+```
+
+Exploritory Data Visualizations
 
 # general PCAs of the data
 # using varience stablizing transformations 
 ```{r}
-Stage_deseqvst <- vst(Stage_deseq, blind = FALSE)
-plotPCA(Stage_deseqvst, intgroup=c("Stage"))
+ddsvst <- vst(dds, blind = FALSE)
+plotPCA(ddsvst, intgroup=c("Temp"))
+plotPCA(ddsvst, intgroup=c("Stage"))
+```
 
+High Quality PCA of all genes, separated by stage
 
+```{r}
+pcaData <- plotPCA(ddsvst, intgroup=c("Stage"), returnData=TRUE)
+percentVar <- round(100 * attr(pcaData, "percentVar"))
+ggplot(pcaData, aes(PC1, PC2, color=Stage)) +
+  geom_point(size=3) +
+  coord_fixed() + ylab("PC2: 14% Variance Explained") +
+  xlab("PC1: 80% Variance Explained") +
+  theme_linedraw() + scale_color_manual(values = c("4cell" = "#ED6A5A", "blastula" = "#0D5C63", "gastrula" = "#FED766", "larvae" = "#A03E99", "eggs" = "#9DD9D2"))
 
 
 ```
+
+Can I plot the 3rd and 4th PCs? Of all genes
+
+```{r}
+# different way of doing PCA
+mat <- assay(ddsvst)
+# need to transpose to tidy format
+tmat <- as.data.frame(t(mat))
+PCEL <- prcomp(tmat)
+#loadings
+head(PCEL$rotation)
+# scores
+head(PCEL$x)
+
+scores = as.data.frame(PCEL$x)
+
+# plot of observations
+ggplot(data = scores, aes(x = PC3, y = PC4, label = rownames(scores), color = )) +
+  geom_hline(yintercept = 0, colour = "gray65") +
+  geom_vline(xintercept = 0, colour = "gray65") +
+  geom_text(colour = "tomato", alpha = 0.8, size = 4)
+```
+Does not look like there is clustering by temp treatment 
+
+
+
+
+
+Sample to Sample distance matrix using all genes. Code form Erin Chille
+
+The darker blue the less "distance" between the two samples
+```{r}
+gsampleDists <- dist(t(assay(ddsvst))) #calculate distance matix
+gsampleDistMatrix <- as.matrix(gsampleDists) #distance matrix
+rownames(gsampleDistMatrix) <- colnames(ddsvst) #assign row names
+colnames(gsampleDistMatrix) <- NULL #assign col names
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255) #assign colors
+pheatmap(gsampleDistMatrix, #plot matrix
+         clustering_distance_rows=gsampleDists, #cluster rows
+         clustering_distance_cols=gsampleDists, #cluster columns
+         col=colors) #set colors
+
+
+```
+
+In the clustering it doesn't look like the temp treatments within stages cluster... 
+
+And it shows no differentiation in overall expression from egg to 4cell 
+
+
+More specific PCAs using differentially expressed genes only. 
+
+Ok does this happen for stage?
+
+```{r}
+# first have to combine all the significant lists
+stage_combine <- rbind(sig_Blastula_4cell, sig_Gastrula_4cell, sig_Larvae_4cell, sig_Eggs_4cell, sig_Blastula_Eggs, sig_Gastrula_Eggs, sig_Larvae_Eggs, sig_Blastula_Larvae, sig_Gastrula_Larvae, sig_Blastula_Gastrula)
+
+stage_list <- ddsTxi_Stage[which(rownames(ddsTxi_Stage) %in% rownames(stage_combine)),] 
+
+
+
+stage_vst <- vst(stage_list)
+plotPCA(stage_vst, intgroup=c("Stage"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
