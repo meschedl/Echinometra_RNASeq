@@ -74,21 +74,9 @@ module load RSEM/1.3.0-foss-2016b
 `sbatch read_align_transcript_quant.sh`  
 Submitted batch job 1216093
 
-ran out of memory after 7 days!!
+Ran out of memory after 7 days, only had one sample left to go. Did that one separately.
 
-ok got to last sample
-Says this:
-Expression Results are written!
-Time Used for EM.cpp : 0 h 04 m 00 s
-
-rm -rf RSEM.temp
-
-CMD: touch RSEM.isoforms.results.ok
-slurmstepd: error: Exceeded step memory limit at some point.
-
-think I might be ok if I just re-do the last sample eggs rep 3
-
-nano eggs_align.sh
+`nano eggs_align.sh`
 
 ```
 #!/bin/bash
@@ -109,154 +97,21 @@ module load RSEM/1.3.0-foss-2016b
 /opt/software/Trinity/2.8.4-foss-2016b/trinityrnaseq-Trinity-v2.8.4/util/align_and_estimate_abundance.pl --transcripts EL_ortholog_filtered.fasta --seqType fq --single EL_EGGS_3_S17_L002_R1_001.fastq.gz.trim.fq.gz --est_method RSEM --aln_method bowtie2 --thread_count 10 --trinity_mode --output_dir eggs_3
 
 ```
-
 Submitted batch job 1307802
 
-ok output looks exactly right for the singleton one
-
-all the RSEM.genes.results files are the ones I need to
-Build Transcript and Gene Expression Matrices
-
-need to use the trinity perl scrip abundance_estimates_to_matrix.pl
-
-EL_ortholog_filtered.fasta.gene_trans_map
-
-/home/craker/diadema/trinityrnaseq-Trinity-v2.8.4/util/abundance_estimates_to_matrix.pl \
---est_method salmon --gene_trans_map none --out_prefix salmon --name_sample_by_basedir \
-pH_high_rep1/quant.sf pH_high_rep2/quant.sf pH_high_rep3/quant.sf pH_high_rep4/quant.sf \
-pH_high_rep5/quant.sf pH_high_rep6/quant.sf pH_high_rep7/quant.sf pH_medx_rep1/quant.sf \
-pH_medx_rep2/quant.sf pH_medx_rep3/quant.sf pH_medx_rep4/quant.sf pH_medx_rep5/quant.sf \
-pH_medx_rep6/quant.sf pH_lowx_rep1/quant.sf pH_lowx_rep2/quant.sf pH_lowx_rep3/quant.sf \
-pH_lowx_rep4/quant.sf pH_lowx_rep5/quant.sf pH_lowx_rep6/quant.sf pH_lowx_rep7/quant.sf \
-pH_lowx_rep8/quant.sf
-
-doing gene abundances
-should also do transcript abundances?
-do both I guess
+This made separate directories for each sample, with an RSEM.genes.results and RSEM.isoforms.results files in them with count values like FPKM and CPM.
 
 
-`nano abundence-estimates.sh`
-
-```
-#!/bin/bash
-#SBATCH -t 200:00:00
-#SBATCH --nodes=1 --ntasks-per-node=10
-#SBATCH --export=NONE
-#SBATCH --mem=10GB
-#SBATCH --mail-type=BEGIN,END,FAIL
-#SBATCH --mail-user=meschedl@uri.edu
-#SBATCH --account=pradalab
-#SBATCH -D /data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/
-
-# load module
-module load Trinity/2.8.4-foss-2016b
-module load R-bundle-Bioconductor/3.3-foss-2016b-R-3.3.1
-
-# calculate abundance matrix for genes
-
-/opt/software/Trinity/2.8.4-foss-2016b/trinityrnaseq-Trinity-v2.8.4/util/abundance_estimates_to_matrix.pl --est_method RSEM \
---gene_trans_map EL_ortholog_filtered.fasta.gene_trans_map \
---name_sample_by_basedir \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_4cell_rep_1/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_4cell_rep_2/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_4cell_rep_3/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_blast_rep_1/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_blast_rep_2/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_blast_rep_3/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_gast_rep_1/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_gast_rep_2/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_gast_rep_3/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_larv_rep_1/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_larv_rep_2/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_larv_rep_3/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/33_4cell_rep_1/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/33_4cell_rep_2/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/33_4cell_rep_3/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/33_blast_rep_1/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/33_blast_rep_2/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/33_blast_rep_3/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/33_gast_rep_1/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/33_gast_rep_2/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/33_gast_rep_3/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/33_larv_rep_1/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/33_larv_rep_2/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/33_larv_rep_3/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/eggs_rep_1/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/eggs_rep_2/RSEM.isoforms.results \
-/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/eggs_3/RSEM.isoforms.results \
-```
-sbatch abundence-estimates.sh
-
-ok have to specify full path to each sample?
-
-still have to use the name samples
-had a problem with that one eggs sample...
-there is a results file in eggs_rep_3 directory, the error did say it wrote the file then ran out of mem
-change to use thatone
-
-Submitted batch job 1312746
+Now to get the counts file, I do NOT want to use the Trinity abundance estimation script, because it will make non-integer count estimates which are incompatible with the DESeq2 differential expression R package.
 
 
+I need to use tximport R program to do the transcript abundance estimation
 
-ok it's having problems because some transcripts don't have values for it to caluclate
-Error, no TPM value specified for transcript [TRINITY_DN100003_c0_g1_i1] of gene [TRINITY_DN100003_c0_g1] for sample 29_4cell_rep_1 at /opt/software/Trinity/2.8.4-foss-2016b/trinityrnaseq-Trinity-v2.8.4/util/abundance_estimates_to_matrix.pl line 322.
-
-so I don't know what happened with that
-
-
-oh apparently it only works for isofom results
-not a problem because "When you include the --gene_trans_map file above, it will automatically generate the gene-level count and expression matrices"
-
-
-ok now haveing another problem
-* Outputting combined matrix.
-
-/net/clusterhn.cluster.com/opt/software/Trinity/2.8.4-foss-2016b/trinityrnaseq-Trinity-v2.8.4/util/support_scripts/run_TMM_scale_matrix.pl --matrix RSEM.isoform.TPM.not_cross_norm > RSEM.isoform.TMM.EXPR.matrixCMD: R --no-save --no-restore --no-site-file --no-init-file -q < RSEM.isoform.TPM.not_cross_norm.runTMM.R 1>&2
-sh: R: command not found
-Error, cmd: R --no-save --no-restore --no-site-file --no-init-file -q < RSEM.isoform.TPM.not_cross_norm.runTMM.R 1>&2  died with ret (32512)  at /net/clusterhn.cluster.com/opt/software/Trinity/2.8.4-foss-2016b/trinityrnaseq-Trinity-v2.8.4/util/support_scripts/run_TMM_scale_matrix.pl line 105.
-Error, CMD: /net/clusterhn.cluster.com/opt/software/Trinity/2.8.4-foss-2016b/trinityrnaseq-Trinity-v2.8.4/util/support_scripts/run_TMM_scale_matrix.pl --matrix RSEM.isoform.TPM.not_cross_norm > RSEM.isoform.TMM.EXPR.matrix died with ret 9728 at /opt/software/Trinity/2.8.4-foss-2016b/trinityrnaseq-Trinity-v2.8.4/util/abundance_estimates_to_matrix.pl line 385.
-
-
-could be a bad script but also looks like I need to use R?? https://github.com/trinityrnaseq/trinityrnaseq/issues/345
-
-see if works with R-bundle-Bioconductor/3.3-foss-2016b-R-3.3.1 ??
-
-ok might be working now
-
-yay completed really quickly!!!
-
-"The 'counts.matrix' file is used for downstream analyses of differential expression. The TMM.EXPR.matrix file is used as the gene expression matrix in most other analyses. "
-
-want to use DESeq2 on RSEM.gene.counts.matrix
-
-scp meschedl@bluewaves.uri.edu:/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/RSEM.gene.counts.matrix /Users/maggieschedl/Desktop/URI/Prada/Echinometra_RNASeq/
-
-create file with treatment and life stage information
-
-problem is that the files are normalized, can I run again without any normalization??
-added --cross_sample_norm none \
-Submitted batch job 1373320
-
-these are still not integers... not sure what is going to happen or what to do...
-
-maybe I shoulnd't use the gene_trans_map
-"When you include the --gene_trans_map file above, it will automatically generate the gene-level count and expression matrices, using the 'scaledTPM' method as described in txImport but implemented here directly in the Trinity script. This 'scaledTPM' method for estimating gene counts accounts for differences in isoform lengths that could otherwise lead to false gene DE reporting under situations where it is differential transcript usage (DTU) as opposed to differential gene expression (DGE) occurring."
---gene_trans_map EL_ortholog_filtered.fasta.gene_trans_map \
-Submitted batch job 1373371
-
-ok need to say it but say non? --gene_trans_map none \
-Submitted batch job 1373374
-these are still not integers...
-
-ugh but I wan the gene ones though not isoform!!!
-
-
-need to use tximport R program to do the transcript abundance estimation
-
-need to have all the RSEM.gene.results files on my computer.
+I need to have all the RSEM.gene.results files on my computer.
 secure copy all of them
-rename all of them
+rename all of them to "29_4cell_rep_1.RSEM.genes.results" style to be able to load them into R
 
+```
 scp meschedl@bluewaves.uri.edu:/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_4cell_rep_1/RSEM.genes.results /Users/maggieschedl/Desktop/URI/Prada/Echinometra_RNASeq/EL-DESeq2/
 scp meschedl@bluewaves.uri.edu:/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_4cell_rep_2/RSEM.genes.results /Users/maggieschedl/Desktop/URI/Prada/Echinometra_RNASeq/EL-DESeq2/
 scp meschedl@bluewaves.uri.edu:/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/29_4cell_rep_3/RSEM.genes.results /Users/maggieschedl/Desktop/URI/Prada/Echinometra_RNASeq/EL-DESeq2/
@@ -284,3 +139,4 @@ scp meschedl@bluewaves.uri.edu:/data/pradalab/meschedl/Echinometra/trimmed-data/
 scp meschedl@bluewaves.uri.edu:/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/eggs_rep_1/RSEM.genes.results /Users/maggieschedl/Desktop/URI/Prada/Echinometra_RNASeq/EL-DESeq2/
 scp meschedl@bluewaves.uri.edu:/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/eggs_rep_2/RSEM.genes.results /Users/maggieschedl/Desktop/URI/Prada/Echinometra_RNASeq/EL-DESeq2/
 scp meschedl@bluewaves.uri.edu:/data/pradalab/meschedl/Echinometra/trimmed-data/EL_trimmed/alignment/eggs_3/RSEM.genes.results /Users/maggieschedl/Desktop/URI/Prada/Echinometra_RNASeq/EL-DESeq2/
+```
