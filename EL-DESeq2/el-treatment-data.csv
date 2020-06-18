@@ -1,7 +1,7 @@
 ﻿Sample,Stage,Temp
-29_4cell_rep_1,4cell,ambient
-29_4cell_rep_2,4cell,ambient
-29_4cell_rep_3,4cell,ambient
+29_4cell_rep_1,fourcell,ambient
+29_4cell_rep_2,fourcell,ambient
+29_4cell_rep_3,fourcell,ambient
 29_blast_rep_1,blastula,ambient
 29_blast_rep_2,blastula,ambient
 29_blast_rep_3,blastula,ambient
@@ -11,9 +11,9 @@
 29_larv_rep_1,larvae,ambient
 29_larv_rep_2,larvae,ambient
 29_larv_rep_3,larvae,ambient
-33_4cell_rep_1,4cell,high
-33_4cell_rep_2,4cell,high
-33_4cell_rep_3,4cell,high
+33_4cell_rep_1,fourcell,high
+33_4cell_rep_2,fourcell,high
+33_4cell_rep_3,fourcell,high
 33_blast_rep_1,blastula,high
 33_blast_rep_2,blastula,high
 33_blast_rep_3,blastula,high

@@ -62,7 +62,7 @@ not able to do "intereaction effect" in this part of the design because eggs are
 
 ```{r}
 # Set up for complete combinatorial design 
-Sample_info$Stage = factor(x = Sample_info$Stage,levels = c('4cell','blastula', "gastrula", "larvae", "eggs"))
+Sample_info$Stage = factor(x = Sample_info$Stage,levels = c('fourcell','blastula', "gastrula", "larvae", "eggs"))
 Sample_info$Temp = factor(x = Sample_info$Temp, levels = c("ambient", "high"))
 ddsTxi_Comb <- DESeqDataSetFromTximport(txi.rsem,
                                    colData = Sample_info,
@@ -100,19 +100,19 @@ All possible results combinations?
 
 ```{r}
 # had to use F for 4 if starting the name of results
-BA_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "blastulaambient"))
-GA_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "gastrulaambient"))
-LA_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "larvaeambient"))
-EA_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "eggsambient"))
-FCH_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "4cellhigh"))
-BH_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "blastulahigh"))
-GH_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "gastrulahigh"))
-LH_4CA <- results(dds, alpha=0.05, contrast=c("group", "4cellambient", "larvaehigh"))
+BA_4CA <- results(dds, alpha=0.05, contrast=c("group", "fourcellambient", "blastulaambient"))
+GA_4CA <- results(dds, alpha=0.05, contrast=c("group", "fourcellambient", "gastrulaambient"))
+LA_4CA <- results(dds, alpha=0.05, contrast=c("group", "fourcellambient", "larvaeambient"))
+EA_4CA <- results(dds, alpha=0.05, contrast=c("group", "fourcellambient", "eggsambient"))
+FCH_4CA <- results(dds, alpha=0.05, contrast=c("group", "fourcellambient", "fourcellhigh"))
+BH_4CA <- results(dds, alpha=0.05, contrast=c("group", "fourcellambient", "blastulahigh"))
+GH_4CA <- results(dds, alpha=0.05, contrast=c("group", "fourcellambient", "gastrulahigh"))
+LH_4CA <- results(dds, alpha=0.05, contrast=c("group", "fourcellambient", "larvaehigh"))
 
 GA_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "gastrulaambient"))
 LA_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "larvaeambient"))
 EA_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "eggsambient"))
-FCH_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "4cellhigh"))
+FCH_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "fourcellhigh"))
 BH_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "blastulahigh"))
 GH_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "gastrulahigh"))
 LH_BA <- results(dds, alpha=0.05, contrast=c("group", "blastulaambient", "larvaehigh"))
@@ -125,19 +125,19 @@ GH_GA <- results(dds, alpha=0.05, contrast=c("group", "gastrulaambient", "gastru
 LH_GA <- results(dds, alpha=0.05, contrast=c("group", "gastrulaambient", "larvaehigh"))
 
 EA_LA <- results(dds, alpha=0.05, contrast=c("group", "larvaeambient", "eggsambient"))
-FCH_LA <- results(dds, alpha=0.05, contrast=c("group", "larvaeambient", "4cellhigh"))
+FCH_LA <- results(dds, alpha=0.05, contrast=c("group", "larvaeambient", "fourcellhigh"))
 BH_LA <- results(dds, alpha=0.05, contrast=c("group", "larvaeambient", "blastulahigh"))
 GH_LA <- results(dds, alpha=0.05, contrast=c("group", "larvaeambient", "gastrulahigh"))
 LH_LA <- results(dds, alpha=0.05, contrast=c("group", "larvaeambient", "larvaehigh"))
 
-FCH_EA <- results(dds, alpha=0.05, contrast=c("group", "eggsambient", "4cellhigh"))
+FCH_EA <- results(dds, alpha=0.05, contrast=c("group", "eggsambient", "fourcellhigh"))
 BH_EA <- results(dds, alpha=0.05, contrast=c("group", "eggsambient", "blastulahigh"))
 GH_EA <- results(dds, alpha=0.05, contrast=c("group", "eggsambient", "gastrulahigh"))
 LH_EA <- results(dds, alpha=0.05, contrast=c("group", "eggsambient", "larvaehigh"))
 
-BH_4CH <- results(dds, alpha=0.05, contrast=c("group", "4cellhigh", "blastulahigh"))
-GH_4CH <- results(dds, alpha=0.05, contrast=c("group", "4cellhigh", "gastrulahigh"))
-LH_4CH <- results(dds, alpha=0.05, contrast=c("group", "4cellhigh", "larvaehigh"))
+BH_4CH <- results(dds, alpha=0.05, contrast=c("group", "fourcellhigh", "blastulahigh"))
+GH_4CH <- results(dds, alpha=0.05, contrast=c("group", "fourcellhigh", "gastrulahigh"))
+LH_4CH <- results(dds, alpha=0.05, contrast=c("group", "fourcellhigh", "larvaehigh"))
 
 GH_BH <- results(dds, alpha=0.05, contrast=c("group", "blastulahigh", "gastrulahigh"))
 LH_BH <- results(dds, alpha=0.05, contrast=c("group", "blastulahigh", "larvaehigh"))
@@ -228,10 +228,10 @@ resultsNames(dds_Stage)
 Get results for all stage comparisons 
 
 ```{r}
-Blastula_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula", "4cell"))
-Gastrula_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "gastrula", "4cell"))
-Larvae_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "larvae", "4cell"))
-Eggs_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "eggs", "4cell"))
+Blastula_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula", "fourcell"))
+Gastrula_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "gastrula", "fourcell"))
+Larvae_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "larvae", "fourcell"))
+Eggs_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "eggs", "fourcell"))
 
 Blastula_Eggs <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula", "eggs"))
 Gastrula_Eggs <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "gastrula", "eggs"))
@@ -314,8 +314,8 @@ Exploritory Data Visualizations
 # using varience stablizing transformations 
 ```{r}
 ddsvst <- vst(dds, blind = FALSE)
-plotPCA(ddsvst, intgroup=c("Temp"))
 plotPCA(ddsvst, intgroup=c("Stage"))
+plotPCA(ddsvst, intgroup=c("Temp"))
 ```
 
 High Quality PCA of all genes, separated by stage
@@ -327,7 +327,7 @@ ggplot(pcaData, aes(PC1, PC2, color=Stage)) +
   geom_point(size=3) +
   coord_fixed() + ylab("PC2: 14% Variance Explained") +
   xlab("PC1: 80% Variance Explained") +
-  theme_linedraw() + scale_color_manual(values = c("4cell" = "#ED6A5A", "blastula" = "#0D5C63", "gastrula" = "#FED766", "larvae" = "#A03E99", "eggs" = "#9DD9D2"))
+  theme_linedraw() + scale_color_manual(values = c("fourcell" = "#ED6A5A", "blastula" = "#0D5C63", "gastrula" = "#FED766", "larvae" = "#A03E99", "eggs" = "#9DD9D2"))
 
 
 ```
@@ -337,7 +337,7 @@ Can I plot the 3rd and 4th PCs? Of all genes
 ```{r}
 # different way of doing PCA
 mat <- assay(ddsvst)
-# need to transpose to tidy format
+# need to transpose to tidy format for this PCA format
 tmat <- as.data.frame(t(mat))
 PCEL <- prcomp(tmat)
 #loadings
@@ -383,7 +383,7 @@ And it shows no differentiation in overall expression from egg to 4cell
 
 More specific PCAs using differentially expressed genes only. 
 
-Ok does this happen for stage?
+Stage
 
 ```{r}
 # first have to combine all the significant lists
@@ -398,21 +398,50 @@ plotPCA(stage_vst, intgroup=c("Stage"))
 ```
 
 
+Heat map of all genes
+
+```{r}
+select <- order(rowMeans(counts(dds,normalized=TRUE)),
+                decreasing=TRUE)[1:20]
+df <- as.data.frame(colData(dds)[,c("Stage","Temp")])
+pheatmap(assay(ddsvst)[select,], cluster_rows=TRUE, show_rownames=FALSE,
+         cluster_cols=TRUE, annotation_col=df)
+
+
+```
 
 
 
+```{r}
+# sig.num <- sum(combine$padj <0.1, na.rm=T) 
+# topVarGenes <- head(order(rowVars(assay(combine_rlog)),decreasing=TRUE),sig.num) #sort by decreasing sig
+# mat <- assay(combine_rlog)[ topVarGenes, ] #make an expression object
+
+# mat <- mat - rowMeans(mat) #difference in expression compared to average across all samples
+# col.order <- c("29_4cell_rep_1", "29_4cell_rep_2", "29_4cell_rep_3", "29_blast_rep_1", "29_blast_rep_2", "29_blast_rep_3", "29_gast_rep_1", "29_gast_rep_2", "29_gast_rep_3", "29_larv_rep_1", "29_larv_rep_2", "29_larv_rep_3", "33_4cell_rep_1", "33_4cell_rep_2", "33_4cell_rep_3", "33_blast_rep_1", "33_blast_rep_2", "33_blast_rep_3", "33_gast_rep_1", "33_gast_rep_2", "33_gast_rep_3", "33_larv_rep_1", "33_larv_rep_2", "33_larv_rep_3", "eggs_rep_1", "eggs_rep_2", "eggs_rep_3")
+# mat <- mat[,col.order]
+# df1 <- as.data.frame(colData(combine_rlog)[c("effluent", "pCO2")]) #make dataframe for column naming 
+
+
+select <- order(rowMeans(counts(dds,normalized=TRUE)),
+                decreasing=TRUE)[1:100]
+
+matri <- assay(ddsvst)[select,]
+col.order <- c("29_4cell_rep_1", "29_4cell_rep_2", "29_4cell_rep_3", "29_blast_rep_1", "29_blast_rep_2", "29_blast_rep_3", "29_gast_rep_1", "29_gast_rep_2", "29_gast_rep_3", "29_larv_rep_1", "29_larv_rep_2", "29_larv_rep_3", "33_4cell_rep_1", "33_4cell_rep_2", "33_4cell_rep_3", "33_blast_rep_1", "33_blast_rep_2", "33_blast_rep_3", "33_gast_rep_1", "33_gast_rep_2", "33_gast_rep_3", "33_larv_rep_1", "33_larv_rep_2", "33_larv_rep_3", "eggs_rep_1", "eggs_rep_2", "eggs_rep_3")
+matri <- matri[,col.order]
 
 
 
+df <- as.data.frame(colData(dds)[,c("Stage","Temp")])
 
+colfunc <- colorRampPalette(c("slateblue3", "white", "darkred")) #make function for the color gradient 
+ann_colors <- list(Temp = c(ambient="skyblue1", high="tomato3"), Stage = c(fourcell= "#ED6A5A", blastula="#0D5C63",gastrula= "#FED766",larvae= "#A03E99",eggs= "#9DD9D2"))
+# breakss <- c(-2, -1.9, -1.8, -1.7, -1.6, -1.5, -1.4, -1.3, -1.2, -1.1, -1, -.9, -.8, -.7, -.6, -.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2) 
+pheatmap(matri, annotation_col=df, clustering_method = "average", 
+         clustering_distance_rows="euclidean", show_rownames =FALSE, cluster_cols=TRUE,
+         show_colnames =F, annotation_colors=ann_colors, color = colfunc(50))
 
-
-
-
-
-
-
-
+```
 
 
 
