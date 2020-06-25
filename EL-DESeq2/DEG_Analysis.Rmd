@@ -1,0 +1,181 @@
+---
+title: "DEGs"
+author: "Maggie Schedl"
+date: "6/24/2020"
+output: github_document
+---
+
+
+```{r}
+#libraries
+library(naniar)
+library(tidyverse)
+library(dplyr)
+library(stringr)
+```
+
+Read i orthogroups file and do same file manipulations as in annotation script
+```{r}
+orthologs <- read.delim("LORF_EL90.pep__v__SPU_peptide.tsv", sep = "\t")
+head(orthologs)
+EL.orthologs <- orthologs %>% 
+  select(1,2)
+head(EL.orthologs)
+# collapse df in to one column multiple rows instead of one row multiple columns
+tr.orthogroups <- separate_rows(EL.orthologs, "LORF_EL90.pep", sep = ",", convert = FALSE)
+head(tr.orthogroups)
+# remove extra characters of .p#s
+tr.orthogroups <-mapply(gsub, pattern = ".p1", replacement = "", tr.orthogroups)
+tr.orthogroups <- as.data.frame(tr.orthogroups)
+# I don't know why this always removes the column names but it does
+# remove .p2
+tr.orthogroups <-mapply(gsub, pattern = ".p2", replacement = "", tr.orthogroups)
+tr.orthogroups <- as.data.frame(tr.orthogroups)
+# remove .p3
+tr.orthogroups <-mapply(gsub, pattern = ".p3", replacement = "", tr.orthogroups)
+tr.orthogroups <- as.data.frame(tr.orthogroups)
+# remove .p4
+tr.orthogroups <-mapply(gsub, pattern = ".p4", replacement = "", tr.orthogroups)
+tr.orthogroups <- as.data.frame(tr.orthogroups)
+# remove .p5
+tr.orthogroups <-mapply(gsub, pattern = ".p5", replacement = "", tr.orthogroups)
+tr.orthogroups <- as.data.frame(tr.orthogroups)
+# add column names
+colnames(tr.orthogroups) <- c("Orthogroup", "transcript_id")
+head(tr.orthogroups)
+```
+
+read in SPU annotation file with the orthogroups label in it
+
+```{r}
+annot.ortho.SPU <- read.delim("annot.ortho.SPU.txt", sep = "\t")
+head(annot.ortho.SPU)
+
+```
+
+read in lists of DEGS 
+
+```{r}
+sig_LH_LA <- read.delim("sig_LH_LA.txt", sep = "\t")
+head(sig_LH_LA)
+sig_BH_BA <- read.delim("sig_BH_BA.txt", sep = "\t")
+head(sig_BH_BA)
+sig_GH_GA <- read.delim("sig_GH_GA.txt", sep = "\t")
+head(sig_GH_GA)
+```
+
+What are the orthogroups of the DEGs?
+```{r}
+# give it the column to merge by
+sig_LH_LA$transcript_id <- rownames(sig_LH_LA)
+head(sig_LH_LA)
+# make dataframe of only LH_LA sig othrogroups
+LH_LA_orthogroups <- merge(sig_LH_LA, tr.orthogroups, by= "transcript_id", sort = TRUE )
+head(LH_LA_orthogroups)
+# ok this is nothing because the orthogroup file is all by isoforms not genes
+
+```
+
+I think what I'll need to do is just remove the _i# and then remove the duplicate rows...
+
+```{r}
+# I can use . as any character! 
+tr.orthogroups.genes <-mapply(gsub, pattern = "_i.", replacement = "", tr.orthogroups)
+tr.orthogroups.genes <- as.data.frame(tr.orthogroups.genes)
+# there might be random spaces in the file??
+tr.orthogroups.genes <-mapply(gsub, pattern = " ", replacement = "", tr.orthogroups.genes)
+tr.orthogroups.genes <- as.data.frame(tr.orthogroups.genes)
+colnames(tr.orthogroups.genes) <- c("Orthogroup", "transcript_id")
+tr.orthogroups.genes.d <- unique(tr.orthogroups.genes)
+
+tr.orthogroups.genes[1:100,]
+tr.orthogroups.genes.d[1:100,]
+
+
+```
+
+```{r}
+sig_LH_LA$transcript_id <- rownames(sig_LH_LA)
+LH_LA_orthogroups <- merge(sig_LH_LA, tr.orthogroups.genes.d, by= "transcript_id", sort = TRUE )
+head(LH_LA_orthogroups)
+sig_BH_BA$transcript_id <- rownames(sig_BH_BA)
+sig_BH_BA_orthogroups <- merge(sig_BH_BA, tr.orthogroups.genes.d, by= "transcript_id", sort = TRUE )
+head(sig_BH_BA_orthogroups)
+sig_GH_GA$transcript_id <- rownames(sig_GH_GA)
+sig_GH_GA_orthogroups <- merge(sig_GH_GA, tr.orthogroups.genes.d, by= "transcript_id", sort = TRUE )
+head(sig_GH_GA_orthogroups)
+
+```
+
+remove the stats from the DEG lists
+
+```{r}
+sig_GH_GA_orthogroup <- sig_GH_GA_orthogroups %>% select(1,8)
+head(sig_GH_GA_orthogroup) #29
+sig_BH_BA_orthogroup <- sig_BH_BA_orthogroups %>% select(1,8)
+head(sig_BH_BA_orthogroup)
+dim(sig_BH_BA_orthogroup) #138 DEGS 
+LH_LA_orthogroup <- LH_LA_orthogroups %>% select(1,8)
+head(LH_LA_orthogroup) #3
+```
+
+
+Look for the orthogroups from the DEG lists in the annotation file that's merged with orthogroups.
+```{r}
+# blastula comparison 
+Borthogroups <- sig_BH_BA_orthogroup$Orthogroup
+
+Blastula_temp_DEG_annot <- subset(annot.ortho.SPU, Orthogroup %in% Borthogroups)
+dim(Blastula_temp_DEG_annot) # 140 
+# this is looking good that there are actually more, because there should be a few orthogroups with 2 genes
+Blastula_temp_DEG_annot[1:10,]
+
+# gastrula comparison
+Gorthogroups <- sig_GH_GA_orthogroup$Orthogroup
+Gastrula_temp_DEG_annot <- subset(annot.ortho.SPU, Orthogroup %in% Gorthogroups)
+Gastrula_temp_DEG_annot[1:10,]
+dim(Gastrula_temp_DEG_annot)
+
+# larvae comparison
+Lorthogroups <- LH_LA_orthogroup$Orthogroup
+Larvae_temp_DEG_annot <- subset(annot.ortho.SPU, Orthogroup %in% Lorthogroups)
+head(Larvae_temp_DEG_annot)
+
+
+
+write.csv(Blastula_temp_DEG_annot,"Blastula_temp_DEG_annot.csv",col.names=TRUE,row.names=TRUE,sep=",")
+write.csv(Gastrula_temp_DEG_annot,"Gastrula_temp_DEG_annot.csv",col.names=TRUE,row.names=TRUE,sep=",")
+write.csv(Larvae_temp_DEG_annot,"Larvae_temp_DEG_annot.csv",col.names=TRUE,row.names=TRUE,sep=",")
+```
+
+
+GRN
+some of the gene names had / in them to delimiate two gene names I think pertaining to the same gene
+I separated them out into separate lines 
+```{r}
+GRN <- read.csv("journal.pbio.1002391.s013.GRN.csv", header = TRUE)
+head(GRN)
+dim(GRN) #126
+```
+Hopefully these are the same common names as in the annotation file...
+
+
+Start with Blastula because it has the most...
+```{r}
+GRN.genes <- GRN$Gene.Name
+
+BlastulaGRN <- subset(Blastula_temp_DEG_annot, common_name %in% GRN.genes)
+# none.
+
+# what about the whole annotation?
+
+GRNs <- subset(annot.ortho.SPU, common_name %in% GRN.genes)
+print(GRNs) 
+# only 69 of these
+# not sure if the names are all matching up correctly 
+GRN.genes                  
+
+GasturalaGRN <- subset(Gastrula_temp_DEG_annot, common_name %in% GRN.genes)        
+# also none
+
+```

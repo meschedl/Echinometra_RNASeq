@@ -241,6 +241,8 @@ Blastula_Larvae <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula"
 Gastrula_Larvae <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "gastrula", "larvae"))
 
 Blastula_Gastrula <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula", "gastrula"))
+
+summary(Blastula_Gastrula)
 ```
 
 Subset those to only DEGs
@@ -306,6 +308,14 @@ summary(GH_GA)
 summary(BH_BA)
 summary(LH_LA)
 summary(FCH_4CA)
+```
+
+```{r}
+# write tables of the stage specific DEGs for temp
+
+write.table(sig_GH_GA,"sig_GH_GA.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
+write.table(sig_BH_BA,"sig_BH_BA.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
+write.table(sig_LH_LA,"sig_LH_LA.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
 ```
 
 Exploritory Data Visualizations
@@ -392,7 +402,6 @@ stage_combine <- rbind(sig_Blastula_4cell, sig_Gastrula_4cell, sig_Larvae_4cell,
 stage_list <- ddsTxi_Stage[which(rownames(ddsTxi_Stage) %in% rownames(stage_combine)),] 
 
 
-
 stage_vst <- vst(stage_list)
 plotPCA(stage_vst, intgroup=c("Stage"))
 ```
@@ -424,7 +433,7 @@ pheatmap(assay(ddsvst)[select,], cluster_rows=TRUE, show_rownames=FALSE,
 
 
 select <- order(rowMeans(counts(dds,normalized=TRUE)),
-                decreasing=TRUE)[1:100]
+                decreasing=TRUE)[1:50]
 
 matri <- assay(ddsvst)[select,]
 col.order <- c("29_4cell_rep_1", "29_4cell_rep_2", "29_4cell_rep_3", "29_blast_rep_1", "29_blast_rep_2", "29_blast_rep_3", "29_gast_rep_1", "29_gast_rep_2", "29_gast_rep_3", "29_larv_rep_1", "29_larv_rep_2", "29_larv_rep_3", "33_4cell_rep_1", "33_4cell_rep_2", "33_4cell_rep_3", "33_blast_rep_1", "33_blast_rep_2", "33_blast_rep_3", "33_gast_rep_1", "33_gast_rep_2", "33_gast_rep_3", "33_larv_rep_1", "33_larv_rep_2", "33_larv_rep_3", "eggs_rep_1", "eggs_rep_2", "eggs_rep_3")
@@ -434,7 +443,7 @@ matri <- matri[,col.order]
 
 df <- as.data.frame(colData(dds)[,c("Stage","Temp")])
 
-colfunc <- colorRampPalette(c("slateblue3", "white", "darkred")) #make function for the color gradient 
+colfunc <- colorRampPalette(c("steelblue3", "white", "darkorange1")) #make function for the color gradient 
 ann_colors <- list(Temp = c(ambient="skyblue1", high="tomato3"), Stage = c(fourcell= "#ED6A5A", blastula="#0D5C63",gastrula= "#FED766",larvae= "#A03E99",eggs= "#9DD9D2"))
 # breakss <- c(-2, -1.9, -1.8, -1.7, -1.6, -1.5, -1.4, -1.3, -1.2, -1.1, -1, -.9, -.8, -.7, -.6, -.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2) 
 pheatmap(matri, annotation_col=df, clustering_method = "average", 
@@ -446,5 +455,65 @@ pheatmap(matri, annotation_col=df, clustering_method = "average",
 
 
 
+heatmap of stage DEGs
+
+```{r}
+# using the combined list 
+rlog_stage <- rlog(stage_list, blind = FALSE)
+sig.num <- sum(stage_combine$padj <0.00000000005, na.rm=T) 
+topVarGenes <- head(order(rowVars(assay(rlog_stage)),decreasing=TRUE),sig.num) #sort by decreasing sig
+mat <- assay(rlog_stage)[ topVarGenes, ] #make an expression object
+
+mat <- mat - rowMeans(mat) #difference in expression compared to average across all samples
+col.order <- c("29_4cell_rep_1", "29_4cell_rep_2", "29_4cell_rep_3", "29_blast_rep_1", "29_blast_rep_2", "29_blast_rep_3", "29_gast_rep_1", "29_gast_rep_2", "29_gast_rep_3", "29_larv_rep_1", "29_larv_rep_2", "29_larv_rep_3", "33_4cell_rep_1", "33_4cell_rep_2", "33_4cell_rep_3", "33_blast_rep_1", "33_blast_rep_2", "33_blast_rep_3", "33_gast_rep_1", "33_gast_rep_2", "33_gast_rep_3", "33_larv_rep_1", "33_larv_rep_2", "33_larv_rep_3", "eggs_rep_1", "eggs_rep_2", "eggs_rep_3")
+mat <- mat[,col.order]
+df1 <- as.data.frame(colData(rlog_stage)[c("Stage", "Temp")]) #make dataframe for column naming 
+
+colfunc <- colorRampPalette(c("steelblue3", "white", "darkorange1")) #make function for the color gradient 
+ann_colors <- list(Temp = c(ambient="skyblue1", high="tomato3"), Stage = c(fourcell= "#ED6A5A", blastula="#0D5C63",gastrula= "#FED766",larvae= "#A03E99",eggs= "#9DD9D2"))
+# breakss <- c(-2, -1.9, -1.8, -1.7, -1.6, -1.5, -1.4, -1.3, -1.2, -1.1, -1, -.9, -.8, -.7, -.6, -.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2) 
+pheatmap(mat, annotation_col=df1, clustering_method = "average", 
+         clustering_distance_rows="euclidean", show_rownames =FALSE, cluster_cols=TRUE ,
+         show_colnames =F, annotation_colors=ann_colors, color = colfunc(50))
 
 
+
+```
+
+```{r}
+temp_comb <- rbind(sig_GH_GA, sig_BH_BA, sig_LH_LA)
+
+temp_list <- ddsTxi_Stage[which(rownames(ddsTxi_Stage) %in% rownames(temp_comb)),] 
+
+rlog_templist <- rlog(temp_list, blind = FALSE)
+
+```
+
+
+
+
+
+
+
+```{r}
+
+sig.num <- sum(temp_comb$padj <0.05, na.rm=T) 
+topVarGenes <- head(order(rowVars(assay(rlog_templist)),decreasing=TRUE),sig.num) #sort by decreasing sig
+mat <- assay(rlog_stage)[ topVarGenes, ] #make an expression object
+
+mat <- mat - rowMeans(mat) #difference in expression compared to average across all samples
+col.order <- c("eggs_rep_1", "eggs_rep_2", "eggs_rep_3",  "29_4cell_rep_1", "29_4cell_rep_2", "29_4cell_rep_3", "29_blast_rep_1", "29_blast_rep_2", "29_blast_rep_3", "29_gast_rep_1", "29_gast_rep_2", "29_gast_rep_3", "29_larv_rep_1", "29_larv_rep_2", "29_larv_rep_3", "33_4cell_rep_1", "33_4cell_rep_2", "33_4cell_rep_3", "33_blast_rep_1", "33_blast_rep_2", "33_blast_rep_3", "33_gast_rep_1", "33_gast_rep_2", "33_gast_rep_3", "33_larv_rep_1", "33_larv_rep_2", "33_larv_rep_3")
+mat <- mat[,col.order]
+df1 <- as.data.frame(colData(rlog_templist)[c("Stage", "Temp")]) #make dataframe for column naming 
+
+colfunc <- colorRampPalette(c("steelblue3", "white", "darkorange1")) #make function for the color gradient 
+ann_colors <- list(Temp = c(ambient="skyblue1", high="tomato3"), Stage = c(fourcell= "#ED6A5A", blastula="#0D5C63",gastrula= "#FED766",larvae= "#A03E99",eggs= "#9DD9D2"))
+# breakss <- c(-2, -1.9, -1.8, -1.7, -1.6, -1.5, -1.4, -1.3, -1.2, -1.1, -1, -.9, -.8, -.7, -.6, -.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2) 
+pheatmap(mat, annotation_col=df1, clustering_method = "average", 
+         clustering_distance_rows="euclidean", show_rownames =FALSE, cluster_cols=FALSE ,
+         show_colnames =F, annotation_colors=ann_colors, color = colfunc(50))
+
+
+
+
+```

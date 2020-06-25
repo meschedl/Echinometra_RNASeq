@@ -15,6 +15,7 @@ getwd()
 library(naniar)
 library(tidyverse)
 library(dplyr)
+library(stringr)
 ```
 
 Read in Trinotate Report
@@ -163,3 +164,37 @@ missing.SPU.EL.annots[1:15,]
 Now the question is what to do with this because the anotations are messy and do not match the SPU anotation file. And they are "binned" by orthogroup, and are not a one to one with any of the transcripts. 
 
 Because the only way to make connections between my transcripts and the SPU anotations is by othrogroup, I need to think of a way to collapse all anotations into orthogroups. 
+
+
+filter SPU by orthogroups, only going to need this information anyways
+
+```{r}
+
+annot.ortho <- merge(SPU.orthogroups, SPU.annot.t, by= "spu_id", sort = TRUE)
+dim(SPU.annot.t) # 29947 
+head(annot.ortho)
+dim(annot.ortho) # 12995
+
+
+# remove the Sp- from all the common names
+
+annot.ortho.SPU <-mapply(gsub, pattern = "Sp-", replacement = "", annot.ortho)
+annot.ortho.SPU <- as.data.frame(annot.ortho.SPU)
+head(annot.ortho.SPU)
+colnames(annot.ortho.SPU) <- c("spu_id", "Orthogroup", "family_member", "common_name" , "synonyms" , "best_genbank_hit")
+head(annot.ortho.SPU)
+write.table(annot.ortho.SPU,"annot.ortho.SPU.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
+```
+
+```{r}
+
+GRN <- read.csv("journal.pbio.1002391.s013.GRN.csv", header = TRUE)
+head(GRN)
+# GeneName is the only important thing..
+
+GRN.names <- GRN$Gene.Name
+```
+
+
+
+

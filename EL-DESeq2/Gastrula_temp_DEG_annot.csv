@@ -1,0 +1,30 @@
+"","spu_id","Orthogroup","family_member","common_name","synonyms","best_genbank_hit"
+"517","SPU_001138","OG0006664","carbonic anhydrase","Cara14LA",NA,"AAH46995"
+"762","SPU_001669","OG0003991","HCO3_cotransp superfamily","Slc4a11","solute carrier family 4, sodium bicarbonate cotransporter-like member 11","EDL28289.1"
+"784","SPU_001722","OG0006655","prefoldin superfamily","Uri1","unconventional prefoldin RPB5 interactor 1, uri, NNX3, PPP1R19, Rmp, C19orf2","XP_002735303"
+"956","SPU_002120","OG0011063",NA,NA,NA,NA
+"1847","SPU_004105","OG0008208",NA,NA,NA,NA
+"1954","SPU_004345","OG0009117",NA,"Fabp2L2","fatty acid binding protein 2-like","XP_005495341"
+"2280","SPU_005005","OG0003954",NA,"Uhrf1bp1L","UHRF1 binding protein 1-like","XP_416170.1"
+"2737","SPU_006003","OG0009137",NA,NA,NA,NA
+"3770","SPU_008319","OG0007092",NA,NA,NA,NA
+"3890","SPU_008575","OG0009250",NA,"Pdia4","Protein disulfide-isomerase A4 precursor (Protein ERp-72) (ERp72)","119531"
+"3913","SPU_008633","OG0001155",NA,"Lct_3","Lactase-phlorizin hydrolase precursor (Lactase-glycosylceramidase) [Includes: Lactase ; Phlorizin hydrolase ] ","126428"
+"4026","SPU_008889","OG0009574","F-box","Emi1","Early mitotic inhibitor, FBX5, Fbo031","XM849747.1"
+"4132","SPU_009124","OG0006145","LIM superfamily, SH3 superfamily","Lisp1","LIM and SH3 protein 1","CAA57833.1"
+"4817","SPU_010691","OG0003733",NA,"Ddx3Y","DEAD (Asp-Glu-Ala-Asp) box polypeptide 3, Y-linked","NP_004651"
+"5524","SPU_012317","OG0006937",NA,NA,NA,NA
+"5900","SPU_013125","OG0011101","Sodium:solute symporter","Slc5a12L1","solute carrier family 5 (sodium/glucose cotransporter), member 12-like, Slc5a12_1",""
+"7084","SPU_015831","OG0000903","Glyco_tranf_GTA-type superfamily","B4galt5_5","carbohydrate (N-acetylgalactosamine 4-0) sulfotransferase 14-1 polypeptide 5-5; beta-1,4-galactosyltransferase (beta-1,4-GalT) V-5","XP_417519.2"
+"7405","SPU_016547","OG0006392",NA,"Sfrs7l","splicing factor, arginine/serine-rich 7-like","Q16629"
+"8140","SPU_018193","OG0003955",NA,"Sipp1","Hsp70/Hsp90-organizing protein","AAB94760"
+"9034","SPU_020197","OG0010530","profilin","Profilin","SpCoel1","47551153"
+"9545","SPU_021241","OG0005235",NA,NA,NA,NA
+"10034","SPU_022358","OG0005154","hexokinase_1 superfamily, hexokinase_2 superfamily","Hk1_2","hexokinase 1-2","AAI35850.1"
+"10670","SPU_023772","OG0007051",NA,"Mgam_3","maltase-glucoamylase","4758712"
+"11254","SPU_025092","OG0007708",NA,"Lct_1","Lactase-phlorizin hydrolase precursor (Lactase-glycosylceramidase) [Includes: Lactase ; Phlorizin hydrolase ] ","126428"
+"11405","SPU_025453","OG0008048","7TM GPCR_1 superfamily","Gpr27L","G protein-coupled receptor 27-like","NP_001107906.1"
+"11451","SPU_025548","OG0009967",NA,"Gst11","glutathione S-transferase","XP_783826"
+"11684","SPU_026008","OG0002437","collagen-fibrillar I/II/III","FcolI/II/IIIf",NA,"CAA61929"
+"12340","SPU_027527","OG0003197","HSP90","Hsp901","Hatpase","AAL79732"
+"12818","SPU_028629","OG0011199","AdoHcyase superfamily","Rdh8_11","retinol dehydrogenase 8-11","NP_056540.1"

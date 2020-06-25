@@ -616,7 +616,20 @@ Blastula_Larvae <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula"
 Gastrula_Larvae <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "gastrula", "larvae"))
 
 Blastula_Gastrula <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula", "gastrula"))
+
+summary(Blastula_Gastrula)
 ```
+
+    ## 
+    ## out of 13296 with nonzero total read count
+    ## adjusted p-value < 0.05
+    ## LFC > 0 (up)       : 2638, 20%
+    ## LFC < 0 (down)     : 2841, 21%
+    ## outliers [1]       : 5, 0.038%
+    ## low counts [2]     : 0, 0%
+    ## (mean count < 1)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
 
 Subset those to only DEGs
 
@@ -785,6 +798,14 @@ summary(FCH_4CA)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
+``` r
+# write tables of the stage specific DEGs for temp
+
+write.table(sig_GH_GA,"sig_GH_GA.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
+write.table(sig_BH_BA,"sig_BH_BA.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
+write.table(sig_LH_LA,"sig_LH_LA.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
+```
+
 Exploritory Data Visualizations
 
 # general PCAs of the data
@@ -796,13 +817,13 @@ ddsvst <- vst(dds, blind = FALSE)
 plotPCA(ddsvst, intgroup=c("Stage"))
 ```
 
-![](EL-DESeq2_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](EL-DESeq2_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 ``` r
 plotPCA(ddsvst, intgroup=c("Temp"))
 ```
 
-![](EL-DESeq2_files/figure-gfm/unnamed-chunk-19-2.png)<!-- -->
+![](EL-DESeq2_files/figure-gfm/unnamed-chunk-20-2.png)<!-- -->
 
 High Quality PCA of all genes, separated by stage
 
@@ -816,7 +837,7 @@ ggplot(pcaData, aes(PC1, PC2, color=Stage)) +
   theme_linedraw() + scale_color_manual(values = c("fourcell" = "#ED6A5A", "blastula" = "#0D5C63", "gastrula" = "#FED766", "larvae" = "#A03E99", "eggs" = "#9DD9D2"))
 ```
 
-![](EL-DESeq2_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](EL-DESeq2_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 Can I plot the 3rd and 4th PCs? Of all genes
 
@@ -938,7 +959,7 @@ ggplot(data = scores, aes(x = PC3, y = PC4, label = rownames(scores), color = ))
   geom_text(colour = "tomato", alpha = 0.8, size = 4)
 ```
 
-![](EL-DESeq2_files/figure-gfm/unnamed-chunk-21-1.png)<!-- --> Does not
+![](EL-DESeq2_files/figure-gfm/unnamed-chunk-22-1.png)<!-- --> Does not
 look like there is clustering by temp treatment
 
 Sample to Sample distance matrix using all genes. Code form Erin Chille
@@ -957,7 +978,7 @@ pheatmap(gsampleDistMatrix, #plot matrix
          col=colors) #set colors
 ```
 
-![](EL-DESeq2_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](EL-DESeq2_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 In the clustering it doesn’t look like the temp treatments within stages
 cluster…
@@ -975,7 +996,6 @@ stage_combine <- rbind(sig_Blastula_4cell, sig_Gastrula_4cell, sig_Larvae_4cell,
 stage_list <- ddsTxi_Stage[which(rownames(ddsTxi_Stage) %in% rownames(stage_combine)),] 
 
 
-
 stage_vst <- vst(stage_list)
 ```
 
@@ -985,7 +1005,7 @@ stage_vst <- vst(stage_list)
 plotPCA(stage_vst, intgroup=c("Stage"))
 ```
 
-![](EL-DESeq2_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](EL-DESeq2_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 Heat map of all genes
 
@@ -997,7 +1017,7 @@ pheatmap(assay(ddsvst)[select,], cluster_rows=TRUE, show_rownames=FALSE,
          cluster_cols=TRUE, annotation_col=df)
 ```
 
-![](EL-DESeq2_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](EL-DESeq2_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 ``` r
 # sig.num <- sum(combine$padj <0.1, na.rm=T) 
@@ -1011,7 +1031,7 @@ pheatmap(assay(ddsvst)[select,], cluster_rows=TRUE, show_rownames=FALSE,
 
 
 select <- order(rowMeans(counts(dds,normalized=TRUE)),
-                decreasing=TRUE)[1:100]
+                decreasing=TRUE)[1:50]
 
 matri <- assay(ddsvst)[select,]
 col.order <- c("29_4cell_rep_1", "29_4cell_rep_2", "29_4cell_rep_3", "29_blast_rep_1", "29_blast_rep_2", "29_blast_rep_3", "29_gast_rep_1", "29_gast_rep_2", "29_gast_rep_3", "29_larv_rep_1", "29_larv_rep_2", "29_larv_rep_3", "33_4cell_rep_1", "33_4cell_rep_2", "33_4cell_rep_3", "33_blast_rep_1", "33_blast_rep_2", "33_blast_rep_3", "33_gast_rep_1", "33_gast_rep_2", "33_gast_rep_3", "33_larv_rep_1", "33_larv_rep_2", "33_larv_rep_3", "eggs_rep_1", "eggs_rep_2", "eggs_rep_3")
@@ -1021,7 +1041,7 @@ matri <- matri[,col.order]
 
 df <- as.data.frame(colData(dds)[,c("Stage","Temp")])
 
-colfunc <- colorRampPalette(c("slateblue3", "white", "darkred")) #make function for the color gradient 
+colfunc <- colorRampPalette(c("steelblue3", "white", "darkorange1")) #make function for the color gradient 
 ann_colors <- list(Temp = c(ambient="skyblue1", high="tomato3"), Stage = c(fourcell= "#ED6A5A", blastula="#0D5C63",gastrula= "#FED766",larvae= "#A03E99",eggs= "#9DD9D2"))
 # breakss <- c(-2, -1.9, -1.8, -1.7, -1.6, -1.5, -1.4, -1.3, -1.2, -1.1, -1, -.9, -.8, -.7, -.6, -.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2) 
 pheatmap(matri, annotation_col=df, clustering_method = "average", 
@@ -1029,4 +1049,63 @@ pheatmap(matri, annotation_col=df, clustering_method = "average",
          show_colnames =F, annotation_colors=ann_colors, color = colfunc(50))
 ```
 
-![](EL-DESeq2_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](EL-DESeq2_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+
+heatmap of stage DEGs
+
+``` r
+# using the combined list 
+rlog_stage <- rlog(stage_list, blind = FALSE)
+```
+
+    ## using 'avgTxLength' from assays(dds), correcting for library size
+
+``` r
+sig.num <- sum(stage_combine$padj <0.00000000005, na.rm=T) 
+topVarGenes <- head(order(rowVars(assay(rlog_stage)),decreasing=TRUE),sig.num) #sort by decreasing sig
+mat <- assay(rlog_stage)[ topVarGenes, ] #make an expression object
+
+mat <- mat - rowMeans(mat) #difference in expression compared to average across all samples
+col.order <- c("29_4cell_rep_1", "29_4cell_rep_2", "29_4cell_rep_3", "29_blast_rep_1", "29_blast_rep_2", "29_blast_rep_3", "29_gast_rep_1", "29_gast_rep_2", "29_gast_rep_3", "29_larv_rep_1", "29_larv_rep_2", "29_larv_rep_3", "33_4cell_rep_1", "33_4cell_rep_2", "33_4cell_rep_3", "33_blast_rep_1", "33_blast_rep_2", "33_blast_rep_3", "33_gast_rep_1", "33_gast_rep_2", "33_gast_rep_3", "33_larv_rep_1", "33_larv_rep_2", "33_larv_rep_3", "eggs_rep_1", "eggs_rep_2", "eggs_rep_3")
+mat <- mat[,col.order]
+df1 <- as.data.frame(colData(rlog_stage)[c("Stage", "Temp")]) #make dataframe for column naming 
+
+colfunc <- colorRampPalette(c("steelblue3", "white", "darkorange1")) #make function for the color gradient 
+ann_colors <- list(Temp = c(ambient="skyblue1", high="tomato3"), Stage = c(fourcell= "#ED6A5A", blastula="#0D5C63",gastrula= "#FED766",larvae= "#A03E99",eggs= "#9DD9D2"))
+# breakss <- c(-2, -1.9, -1.8, -1.7, -1.6, -1.5, -1.4, -1.3, -1.2, -1.1, -1, -.9, -.8, -.7, -.6, -.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2) 
+pheatmap(mat, annotation_col=df1, clustering_method = "average", 
+         clustering_distance_rows="euclidean", show_rownames =FALSE, cluster_cols=TRUE ,
+         show_colnames =F, annotation_colors=ann_colors, color = colfunc(50))
+```
+
+![](EL-DESeq2_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+
+``` r
+temp_comb <- rbind(sig_GH_GA, sig_BH_BA, sig_LH_LA)
+
+temp_list <- ddsTxi_Stage[which(rownames(ddsTxi_Stage) %in% rownames(temp_comb)),] 
+
+rlog_templist <- rlog(temp_list, blind = FALSE)
+```
+
+    ## using 'avgTxLength' from assays(dds), correcting for library size
+
+``` r
+sig.num <- sum(temp_comb$padj <0.05, na.rm=T) 
+topVarGenes <- head(order(rowVars(assay(rlog_templist)),decreasing=TRUE),sig.num) #sort by decreasing sig
+mat <- assay(rlog_stage)[ topVarGenes, ] #make an expression object
+
+mat <- mat - rowMeans(mat) #difference in expression compared to average across all samples
+col.order <- c("eggs_rep_1", "eggs_rep_2", "eggs_rep_3",  "29_4cell_rep_1", "29_4cell_rep_2", "29_4cell_rep_3", "29_blast_rep_1", "29_blast_rep_2", "29_blast_rep_3", "29_gast_rep_1", "29_gast_rep_2", "29_gast_rep_3", "29_larv_rep_1", "29_larv_rep_2", "29_larv_rep_3", "33_4cell_rep_1", "33_4cell_rep_2", "33_4cell_rep_3", "33_blast_rep_1", "33_blast_rep_2", "33_blast_rep_3", "33_gast_rep_1", "33_gast_rep_2", "33_gast_rep_3", "33_larv_rep_1", "33_larv_rep_2", "33_larv_rep_3")
+mat <- mat[,col.order]
+df1 <- as.data.frame(colData(rlog_templist)[c("Stage", "Temp")]) #make dataframe for column naming 
+
+colfunc <- colorRampPalette(c("steelblue3", "white", "darkorange1")) #make function for the color gradient 
+ann_colors <- list(Temp = c(ambient="skyblue1", high="tomato3"), Stage = c(fourcell= "#ED6A5A", blastula="#0D5C63",gastrula= "#FED766",larvae= "#A03E99",eggs= "#9DD9D2"))
+# breakss <- c(-2, -1.9, -1.8, -1.7, -1.6, -1.5, -1.4, -1.3, -1.2, -1.1, -1, -.9, -.8, -.7, -.6, -.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2) 
+pheatmap(mat, annotation_col=df1, clustering_method = "average", 
+         clustering_distance_rows="euclidean", show_rownames =FALSE, cluster_cols=FALSE ,
+         show_colnames =F, annotation_colors=ann_colors, color = colfunc(50))
+```
+
+![](EL-DESeq2_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
