@@ -179,3 +179,44 @@ GasturalaGRN <- subset(Gastrula_temp_DEG_annot, common_name %in% GRN.genes)
 # also none
 
 ```
+
+Are all the GRN genes just missing from the ortholog filtered set?
+
+bring in full annotation file 
+
+```{r}
+# read in annotation file
+SPU.annot <- read.delim("gene_info_table.txt", sep = "\t")
+head(SPU.annot)
+
+# get column names from read me file in build8 zip download from echinobase 
+colnames(SPU.annot) <- c("glean_id", "spu_id", "annotator", "gene_model_check", "aditional_edivence", "family_member", "common_name", "synonyms", "best_genbank_hit", "ortholog_homolog", "group_coordinator", "difficult_annotation_categories", "old_common_name", "note", "manual_anno", "annotation_type", "overlap_gene", "whl_id", "curator")
+SPU.annot[1:15,]
+# cut down on some of the columns
+SPU.annot.t <- SPU.annot[,c(2,6:9)]
+# change nones to NAs
+SPU.annot.t[ SPU.annot.t == "none" ] <- NA
+head(SPU.annot.t)
+
+# remove the Sp- from the common_name column
+SPU.annot.t <-mapply(gsub, pattern = "Sp-", replacement = "", SPU.annot.t)
+SPU.annot.t <- as.data.frame(SPU.annot.t)
+colnames(SPU.annot.t) <- c("spu_id", "family_member", "common_name" , "synonyms" , "best_genbank_hit")
+head(SPU.annot.t)
+
+```
+
+
+
+```{r}
+spu.GRN <- subset(SPU.annot.t, common_name %in% GRN.genes)   
+dim(spu.GRN) #72
+spu.GRN
+```
+
+Ok so not all of the GRN genes are in this annotation file, at least how they are named. 
+
+And only 3 of them are lost between the ortholog groups between the two species (69 to 72)
+
+
+

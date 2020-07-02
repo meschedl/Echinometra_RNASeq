@@ -94,6 +94,10 @@ design(ddsTxi_Comb_filt) <- ~ group
 dds <- DESeq(ddsTxi_Comb_filt)
 resultsNames(dds)
 print(dds$group)
+
+# want to save the normalized counts for plotting purposes
+normalized_counts_dds <- counts(dds, normalized=TRUE)
+write.table(normalized_counts_dds, file="normalized_counts_dds.txt", sep="\t", quote=F, col.names=NA)
 ```
 
 All possible results combinations?
@@ -222,6 +226,8 @@ ddsTxi_Stage_filt <- ddsTxi_Stage[keep,]
 
 ```{r}
 dds_Stage <- DESeq(ddsTxi_Stage_filt)
+normalized_counts_stage <- counts(dds_Stage, normalized=TRUE)
+write.table(normalized_counts_stage, file="normalized_counts_stage.txt", sep="\t", quote=F, col.names=NA)
 
 resultsNames(dds_Stage)
 ```
@@ -290,6 +296,7 @@ ddsTxi_Temp_filt <- ddsTxi_Temp[keep,]
 dds_Temp <- DESeq(ddsTxi_Temp_filt)
 
 resultsNames(dds_Temp)
+
 ```
 Only one comparison here
 

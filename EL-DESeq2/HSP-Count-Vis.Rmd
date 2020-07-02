@@ -1,0 +1,527 @@
+---
+title: "HSP-Vis"
+author: "Maggie Schedl"
+date: "7/1/2020"
+output: github_document
+---
+
+```{r}
+library(DESeq2)
+library(ggplot2)
+library(pheatmap)
+library(RColorBrewer)
+library(reshape2)
+library(rsconnect)
+library(gplots)
+library(ashr)
+library(dplyr)
+library(tidyr)
+library(dlookr)
+library(tximport)
+library(naniar)
+library(tidyverse)
+library(dplyr)
+library(stringr)
+library(ggpubr)
+```
+
+Read i orthogroups file and do same file manipulations as in annotation script
+```{r}
+orthologs <- read.delim("LORF_EL90.pep__v__SPU_peptide.tsv", sep = "\t")
+head(orthologs)
+EL.orthologs <- orthologs %>% 
+  select(1,2)
+head(EL.orthologs)
+# collapse df in to one column multiple rows instead of one row multiple columns
+tr.orthogroups <- separate_rows(EL.orthologs, "LORF_EL90.pep", sep = ",", convert = FALSE)
+head(tr.orthogroups)
+# remove extra characters of .p#s
+tr.orthogroups <-mapply(gsub, pattern = ".p1", replacement = "", tr.orthogroups)
+tr.orthogroups <- as.data.frame(tr.orthogroups)
+# I don't know why this always removes the column names but it does
+# remove .p2
+tr.orthogroups <-mapply(gsub, pattern = ".p2", replacement = "", tr.orthogroups)
+tr.orthogroups <- as.data.frame(tr.orthogroups)
+# remove .p3
+tr.orthogroups <-mapply(gsub, pattern = ".p3", replacement = "", tr.orthogroups)
+tr.orthogroups <- as.data.frame(tr.orthogroups)
+# remove .p4
+tr.orthogroups <-mapply(gsub, pattern = ".p4", replacement = "", tr.orthogroups)
+tr.orthogroups <- as.data.frame(tr.orthogroups)
+# remove .p5
+tr.orthogroups <-mapply(gsub, pattern = ".p5", replacement = "", tr.orthogroups)
+tr.orthogroups <- as.data.frame(tr.orthogroups)
+# add column names
+colnames(tr.orthogroups) <- c("Orthogroup", "transcript_id")
+head(tr.orthogroups)
+
+
+# remove the isoform notations from this file, because the counts file is only by gene. Its ok to collapse by uniquing the transcript ID because they should be in the same orthogroup 
+# I can use . as any character! 
+tr.orthogroups.genes <-mapply(gsub, pattern = "_i.", replacement = "", tr.orthogroups)
+tr.orthogroups.genes <- as.data.frame(tr.orthogroups.genes)
+# there might be random spaces in the file??
+tr.orthogroups.genes <-mapply(gsub, pattern = " ", replacement = "", tr.orthogroups.genes)
+tr.orthogroups.genes <- as.data.frame(tr.orthogroups.genes)
+colnames(tr.orthogroups.genes) <- c("Orthogroup", "transcript_id")
+tr.orthogroups.genes.d <- unique(tr.orthogroups.genes)
+
+tr.orthogroups.genes[1:100,]
+tr.orthogroups.genes.d[1:100,]
+```
+
+Read in the conts file 
+This is from the combined model 
+```{r}
+normalized_counts_dds <- read.delim("normalized_counts_dds.txt", sep = "\t")
+
+colnames(normalized_counts_dds) <- c("transcript_id","29_4cell_rep_1" ,"29_4cell_rep_2" ,"29_4cell_rep_3", "29_blast_rep_1", "29_blast_rep_2" ,"29_blast_rep_3", "29_gast_rep_1",  "29_gast_rep_2",  "29_gast_rep_3", "29_larv_rep_1",  "29_larv_rep_2",  "29_larv_rep_3", "33_4cell_rep_1", "33_4cell_rep_2", "33_4cell_rep_3", "33_blast_rep_1", "33_blast_rep_2", "33_blast_rep_3", "33_gast_rep_1", "33_gast_rep_2",  "33_gast_rep_3",  "33_larv_rep_1",  "33_larv_rep_2",  "33_larv_rep_3", "eggs_rep_1" , "eggs_rep_2",  "eggs_rep_3"  )
+head(normalized_counts_dds)
+```
+
+```{r}
+counts_dds_orthogroups <- merge(normalized_counts_dds, tr.orthogroups.genes.d, by= "transcript_id", sort = TRUE )
+head(counts_dds_orthogroups)
+dim(normalized_counts_dds) # 13296
+dim(counts_dds_orthogroups) # 13226
+
+# not all the ones in the original orthogroups file are present because lowly expressed genes were filtered out in making the normalized count matrix
+```
+
+
+Read in the annotation file that has orthogroups and limited to HSP only (used grep in the terminal to subset for only HSP containing lines)
+```{r}
+annot.ortho.SPU.HSP <- read.delim("annot.ortho.SPU.HSP.txt", sep = "\t", header = FALSE)
+colnames(annot.ortho.SPU.HSP) <- c("line", "spu_id",   "Orthogroup",  "family_member" ,"common_name", "synonyms",  "best_genbank_hit")
+annot.ortho.SPU.HSP$line <- NULL
+head(annot.ortho.SPU.HSP)
+
+
+```
+
+Separate out the orhtogroup and the commonname columns and then merge by orthogroup to the counts matrix
+```{r}
+ortho.HSP <- annot.ortho.SPU.HSP[,c(2,4)]
+
+dim(ortho.HSP) #18
+
+EL.ortho.HSP.counts <- merge(counts_dds_orthogroups, ortho.HSP, by= "Orthogroup", sort = TRUE)
+EL.ortho.HSP.counts
+dim(EL.ortho.HSP.counts) #18 
+# all HSP are present in the counts dataset
+
+Sample_info <- read.csv("el-treatment-data.csv", header=TRUE, sep=",")
+```
+
+can I do a for loop of plotting these?
+
+```{r}
+# Hsp20.2
+# separate out row number
+gene<- EL.ortho.HSP.counts[1,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp20.2_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp20.2") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp20.2_point
+```
+
+```{r}
+# Hsp701A
+# separate out row number
+gene<- EL.ortho.HSP.counts[2,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp701A_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp701A") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp701A_point
+```
+
+```{r}
+# Hsp701C
+# separate out row number
+gene<- EL.ortho.HSP.counts[3,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp701C_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp701C") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp701C_point
+```
+
+```{r}
+# Hsp901
+# separate out row number
+gene<- EL.ortho.HSP.counts[4,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp901_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp901") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp901_point
+```
+
+```{r}
+# Hsp40A
+# separate out row number
+gene<- EL.ortho.HSP.counts[5,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp40A_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp40A") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp40A_point
+```
+
+```{r}
+# Perlc
+# separate out row number
+gene<- EL.ortho.HSP.counts[6,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Perlc_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Perlc") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Perlc_point
+```
+
+```{r}
+# Hsp701G
+# separate out row number
+gene<- EL.ortho.HSP.counts[7,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp701G_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp701G") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp701G_point
+```
+
+```{r}
+# Hsp902A
+# separate out row number
+gene<- EL.ortho.HSP.counts[8,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp902A_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp902A") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp902A_point
+```
+
+```{r}
+# Hsp40F
+# separate out row number
+gene<- EL.ortho.HSP.counts[9,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp40F_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp40F") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp40F_point
+```
+
+```{r}
+# 	Hsp70
+# separate out row number
+gene<- EL.ortho.HSP.counts[10,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp70_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp70") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp70_point
+```
+
+```{r}
+# 	Hsp702A
+# separate out row number
+gene<- EL.ortho.HSP.counts[11,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp702A_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp702A") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp702A_point
+```
+
+```{r}
+# Hsp701H
+# separate out row number
+gene<- EL.ortho.HSP.counts[12,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp701H_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp701H") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp701H_point
+```
+
+```{r}
+# Hsp40E
+# separate out row number
+gene<- EL.ortho.HSP.counts[13,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp40E_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp40E") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp40E_point
+```
+
+```{r}
+# Hsp703B
+# separate out row number
+gene<- EL.ortho.HSP.counts[14,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp703B_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp703B") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp703B_point
+```
+
+```{r}
+# 	Hsp40B
+# separate out row number
+gene<- EL.ortho.HSP.counts[15,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp40B_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp40B") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp40B_point
+```
+
+```{r}
+# Hsp100A
+# separate out row number
+gene<- EL.ortho.HSP.counts[16,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp100A_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp100A") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp100A_point
+```
+
+```{r}
+# Hsp40D
+# separate out row number
+gene<- EL.ortho.HSP.counts[17,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hsp40D_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hsp40D") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hsp40D_point
+```
+
+```{r}
+# Hspbap1
+# separate out row number
+gene<- EL.ortho.HSP.counts[18,]
+# 
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+t.gene_samp_info$Temp <- factor(t.gene_samp_info$Temp,
+    levels = c("ambient", "high"),ordered = TRUE)
+Hspbap1_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, fill = Temp, group = Temp)) + 
+  geom_point(shape = 23, size = 3) + stat_summary(fun=mean, geom="line", aes(group=Temp, color = Temp)) + theme_linedraw() + ggtitle("Hspbap1") + scale_fill_manual(values=c("#29b9d9", "#f28950"))
+Hspbap1_point
+```
+
+separate graphs into two groups by eye 
+
+```{r}
+temp_difference <- ggarrange(Hsp40B_point, Hsp702A_point, Hsp70_point, Hsp40A_point, Hsp901_point, Hsp701C_point, Hsp701A_point, Hsp20.2_point, Hsp40E_point, Hsp901_point, ncol = 5, nrow = 2)
+temp_difference
+
+```
+
+```{r}
+no_temp_diff <- ggarrange(Hspbap1_point, Hsp40D_point, Hsp100A_point, Hsp703B_point, Hsp701H_point, Hsp40F_point, Hsp701G_point, Perlc_point, ncol = 4, nrow = 2)
+
+no_temp_diff
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
