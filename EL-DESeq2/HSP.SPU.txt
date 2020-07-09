@@ -1,0 +1,46 @@
+165	SPU_000319	OG0010717	alpha-crystallin-Hsps_p23-like superfamily	Nudcd2l	NudC domain containing 2	CAJ83725.1
+676	SPU_001496	OG0010353	DnaJ superfamily, SANT superfamily	Dnajhc1	DnaJ (Hsp40) homolog, subfamily C, member 1	NP_001011351.1
+725	SPU_001586	OG0006739	HSP90	Hsp902A	Hatpase	NP_001016282
+1283	SPU_002779	OG0009336	HSP70	Hsp703B	HSC70	Q06068
+2613	SPU_005713	OG0007787	NA	Hspbp1	hsp70-interacting protein; hsp70-binding protein HspBP2	AAH01236.1
+2712	SPU_005958	OG0007868	DUF1977 superfamily	Dnajhb12	DnaJ (Hsp40) homolog, subfamily B, member 12	BAA88308.1
+3459	SPU_007592	OG0011268	DnaJ superfamily	Dnajhc17	DnaJ (Hsp40) homolog, subfamily C member 17	AAH00048.1
+3735	SPU_008238	OG0010858	DnaJ superfamily, DUF1992 superfamily	Dnajc28	DnaJ (Hsp40) homolog, subfamily C, member 28	AAH20175.2
+3882	SPU_008560	OG0009128	HSP70	Hsp702A	HSC70	BAD90025
+3922	SPU_008656	OG0010480	HSP40	Hsp40D	DNAJ	NP_001035581
+4156	SPU_009165	OG0002270	HSP70	Hsp701A	HSC70	BAD12572
+4304	SPU_009477	OG0002278	HSP70	Hsp701C	HSC70	CAA43653  
+4465	SPU_009870	OG0007460	DnaJ superfamily	Dnajhc9	DnaJ (Hsp40) homolog, subfamily C, member 9	NP_598842.1
+4807	SPU_010672	OG0009946	NA	Hsp8	heat shock protein 8	NA
+4836	SPU_010733	OG0006951	NA	Hspc105	NAD(P) dependent steroid dehydrogenase-like	18043625
+5134	SPU_011395	OG0004700	HSP70	Hsp701G	HSC70	CAH93155
+5305	SPU_011848	OG0004567	DnaJ domain, SANT domain	Dnajc2	DnaJ (Hsp40) homolog, subfamily C, member 2	NP_446228
+6091	SPU_013575	OG0010930	NA	Dnajc8l	DnaJ (Hsp40) homolog, subfamily C, member 8	NP_055095
+7223	SPU_016115	OG0009557	DnaJ	Dnajc13	DnaJ (Hsp40) homolog subfamily C member 13, Rme8, Dnajhc13, Dnajc13-2, Dnajc13-3	XP_003222244
+7296	SPU_016286	OG0007517	alpha-crystallin-Hsps_p23-like superfamily	Nudc3	NudC domain containing 3	NP_056147.2
+7410	SPU_016562	OG0003576	HSP40	Hsp40A	DNAJ	NP_001027731    
+7425	SPU_016611	OG0004321	DnaJ superfamily	Dnajhc5b	DnaJ (Hsp40) homolog, subfamily C, member 5 beta	EDL34878.1
+7585	SPU_016958	OG0010826	DnaJ superfamily	Dnajhc30	DnaJ (Hsp40) homolog, subfamily C, member 30; Williams-Beuren syndrome critical region protein 18	AAS07471.1
+7715	SPU_017259	OG0003473	DnaJ superfamily, thioredoxin-like superfamily	Dnajhc10	DnaJ (Hsp40) homolog, subfamily C, member 10	NP_077143.2
+8099	SPU_018117	OG0002631	DnaJ superfamily, thioredoxin-like superfamily	Dnajc16	DnaJ (Hsp40) homolog, subfamily C, member 16; KIAA0962 protein	CAI22371.1
+8140	SPU_018193	OG0003955	NA	Sipp1	Hsp70/Hsp90-organizing protein	AAB94760
+8725	SPU_019484	OG0011815	JmjC superfamily	Hspbap1	HSPB (heat shock 27kDa) associated protein 1	AAH11897.1
+9087	SPU_020294	OG0002005	HSP20	Hsp20.2	alpha-crystallin, p26	AJ616737.1
+9101	SPU_020322	OG0003273	heat shock protein 90 kDa	Hsp902a1	NA	NP_571403.1
+9187	SPU_020500	OG0007775	NA	Hsp70	HSP70, heat shock protein 70	AAW32098.2
+9494	SPU_021154	OG0007435	HSP40	Hsp40F	DNAJ	NP_080676
+9507	SPU_021175	OG0006932	NA	HspC152l	hypothetical protein LOC51504	NP_057488  
+9942	SPU_022158	OG0009155	HSP70	Hsp701H	HSC70	CAH93155
+9974	SPU_022236	OG0009774	HSP40B	Hsp40B	DNAJ	AAH84307
+10748	SPU_023947	OG0005170	TPR superfamily, DnaJ superfamily	Dnajc7	DnaJ (Hsp40) homolog, subfamily C, member 7; DNAJC7 protein	AAH11837.2
+10811	SPU_024081	OG0008091	alpha-crystallin-Hsps_p23-like superfamily, TPR superfamily	Dyx1c1	dyslexia susceptibility 1 candidate 1; EKN1	AAL73230.1
+10821	SPU_024103	OG0009926	NA	HspD1	chaperonin 	NP_955472
+11072	SPU_024667	OG0003967	DnaJ superfamily	Dnajc25	DnaJ (Hsp 40) homolog, subfamily C member 25	AAH48318.1
+11211	SPU_024990	OG0009484	DnaJ superfamily	Dnajb9	DnaJ (Hsp40) homolog, subfamily B, member 9	AAH42713.1
+11395	SPU_025424	OG0010026	HSP100	Hsp100A	ClpB	Q60649
+11491	SPU_025633	OG0003715	NA	Dnaja3	DnaJ (Hsp40) homolog, subfamily A, member 3	NA
+11944	SPU_026592	OG0010788	TM2 superfaily, DnaJ superfamily	Dnajhc22	DnaJ (Hsp40) homolog, subfamily C member 22	NP_079178.2
+12078	SPU_026935	OG0011060	DnaJ superfamily	Dnajc11	DnaJ (Hsp40) homolog, subfamily C, member 11	AAH08772.1
+12340	SPU_027527	OG0003197	HSP90	Hsp901	Hatpase	AAL79732
+12623	SPU_028183	OG0006525	DnaJ superfamily	Dnajhc4L	DnaJ (Hsp40) homolog, subfamily C, member 4 like	NP_065591.1
+12951	SPU_028919	OG0009326	HSP40	Hsp40E	DNAJ	CAI29674  

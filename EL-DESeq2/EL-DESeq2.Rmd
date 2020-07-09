@@ -230,6 +230,10 @@ normalized_counts_stage <- counts(dds_Stage, normalized=TRUE)
 write.table(normalized_counts_stage, file="normalized_counts_stage.txt", sep="\t", quote=F, col.names=NA)
 
 resultsNames(dds_Stage)
+
+vst_stage <- vst(dds_Stage, blind = FALSE)
+vst_stage_counts <- assay(vst_stage)
+write.table(vst_stage_counts,"vst_stage_counts.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
 ```
 Get results for all stage comparisons 
 
@@ -237,21 +241,25 @@ Get results for all stage comparisons
 Blastula_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula", "fourcell"))
 Gastrula_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "gastrula", "fourcell"))
 Larvae_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "larvae", "fourcell"))
-Eggs_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "eggs", "fourcell"))
+Eggs_4cell <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "fourcell", "eggs")) # eggs as base
 
 Blastula_Eggs <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula", "eggs"))
 Gastrula_Eggs <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "gastrula", "eggs"))
 Larvae_Eggs <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "larvae", "eggs"))
 
 Blastula_Larvae <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula", "larvae"))
-Gastrula_Larvae <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "gastrula", "larvae"))
+Gastrula_Larvae <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "larvae", "gastrula")) # gastrula as base
 
-Blastula_Gastrula <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "blastula", "gastrula"))
+Blastula_Gastrula <- results(dds_Stage, alpha=0.05, contrast=c("Stage", "gastrula", "blastula")) # blastula as base 
 
+# check that there are some DEGs
 summary(Blastula_Gastrula)
+# wow yes so many DEGs between these two stages
+
+summary(Eggs_4cell)
 ```
 
-Subset those to only DEGs
+Subset those to only significantly DEGs
 
 ```{r}
 sig_Blastula_4cell <- subset(Blastula_4cell, padj<0.05)
@@ -267,6 +275,24 @@ sig_Blastula_Larvae <- subset(Blastula_Larvae, padj<0.05)
 sig_Gastrula_Larvae <- subset(Gastrula_Larvae, padj<0.05)
 
 sig_Blastula_Gastrula <- subset(Gastrula_Larvae, padj<0.05)
+
+#save the linear progression comparison DEGS
+
+write.table(sig_Eggs_4cell,"sig_Eggs_4cell.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
+write.table(sig_Blastula_4cell,"sig_Blastula_4cell.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
+write.table(sig_Blastula_Gastrula,"sig_Blastula_Gastrula.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
+write.table(sig_Gastrula_Larvae,"sig_Gastrula_Larvae.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
+```
+
+```{r}
+TRINITY_DN77381_c0_g1 <- plotCounts(dds_Stage, "TRINITY_DN77381_c0_g1", intgroup="Stage", returnData=TRUE)
+
+TRINITY_DN77381_c0_g1
+
+plotCounts(dds_Stage, "TRINITY_DN77381_c0_g1", intgroup="Stage")
+TRINITY_DN77381_c0_g1_plot <- ggplot(TRINITY_DN77381_c0_g1, aes(x=Stage, y=count, group =Stage)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("TRINITY_DN77381_c0_g1") + scale_y_continuous(trans='log10')
+TRINITY_DN77381_c0_g1_plot
 ```
 
 Temp only 
@@ -335,7 +361,7 @@ plotPCA(ddsvst, intgroup=c("Stage"))
 plotPCA(ddsvst, intgroup=c("Temp"))
 ```
 
-High Quality PCA of all genes, separated by stage
+Nice Colors PCA of all genes, separated by stage
 
 ```{r}
 pcaData <- plotPCA(ddsvst, intgroup=c("Stage"), returnData=TRUE)
@@ -406,7 +432,13 @@ Stage
 # first have to combine all the significant lists
 stage_combine <- rbind(sig_Blastula_4cell, sig_Gastrula_4cell, sig_Larvae_4cell, sig_Eggs_4cell, sig_Blastula_Eggs, sig_Gastrula_Eggs, sig_Larvae_Eggs, sig_Blastula_Larvae, sig_Gastrula_Larvae, sig_Blastula_Gastrula)
 
+# get an un-duplicated list of genes DEG by all stage comparisons 
 stage_list <- ddsTxi_Stage[which(rownames(ddsTxi_Stage) %in% rownames(stage_combine)),] 
+
+# save list of DEGs that are combined by state 
+# make it into a counts file so it can be saved as a dataframe
+stage_counts <- counts(stage_list, normalized=FALSE)
+write.table(stage_counts,"all_stage_DEGs.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
 
 
 stage_vst <- vst(stage_list)
