@@ -193,6 +193,30 @@ dim(rlog.EL.ortho.GRN.counts) #67
 
 ```
 
+```{r}
+t.vst <- as.data.frame(t(vst.EL.ortho.GRN.counts))
+head(t.vst)
+colnames(t.vst) <- vst.EL.ortho.GRN.counts$common_name
+t.vst
+Sample_info <- read.csv("el-treatment-data.csv", header=TRUE, sep=",")
+t.vst <- t.vst[-c(1,2,30),]
+
+t.vst.samp <- cbind(Sample_info, t.vst)
+t.vst.samp
+
+write.table(t.vst.samp,"t.vst.samp.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
+```
+
+```{r}
+
+
+
+
+```
+
+
+
+
 
  I want them grouped and plotted in stage groups
 
