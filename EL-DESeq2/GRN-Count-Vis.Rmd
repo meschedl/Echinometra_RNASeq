@@ -93,6 +93,17 @@ head(vst_counts_stage)
 
 ```
 
+rlog transformed counts?
+
+```{r}
+rlog_counts_stage <- read.delim("rlog_stage_counts.txt", sep = "\t", header = TRUE)
+head(rlog_counts_stage)
+rlog_counts_stage$transcript_id <- rownames(rlog_counts_stage)
+colnames(rlog_counts_stage) <- c("29_4cell_rep_1" ,"29_4cell_rep_2" ,"29_4cell_rep_3", "29_blast_rep_1", "29_blast_rep_2" ,"29_blast_rep_3", "29_gast_rep_1",  "29_gast_rep_2",  "29_gast_rep_3", "29_larv_rep_1",  "29_larv_rep_2",  "29_larv_rep_3", "33_4cell_rep_1", "33_4cell_rep_2", "33_4cell_rep_3", "33_blast_rep_1", "33_blast_rep_2", "33_blast_rep_3", "33_gast_rep_1", "33_gast_rep_2",  "33_gast_rep_3",  "33_larv_rep_1",  "33_larv_rep_2",  "33_larv_rep_3", "eggs_rep_1" , "eggs_rep_2",  "eggs_rep_3", "transcript_id"  )
+rownames(rlog_counts_stage) <- NULL
+head(rlog_counts_stage)
+
+```
 
 
 Want to merge the counts file and the orthogroup file
@@ -105,6 +116,21 @@ dim(counts_stage_orthogroups) # 13226
 
 # not all the ones in the original orthogroups file are present because lowly expressed genes were filtered out in making the normalized count matrix
 ```
+combine vst counts with orthogroups
+```{r}
+vst_counts_stage_orthogroups <- merge(vst_counts_stage, tr.orthogroups.genes.d, by= "transcript_id", sort = TRUE )
+head(vst_counts_stage_orthogroups)
+
+```
+
+combine rlog counts with orthogroups
+```{r}
+rlog_counts_stage_orthogroups <- merge(rlog_counts_stage, tr.orthogroups.genes.d, by= "transcript_id", sort = TRUE )
+head(rlog_counts_stage_orthogroups)
+
+```
+
+
 
 Now to limit the anotation file that has orthogroups to the GRN genes to find the orthogroups of the GRN genes 
 
@@ -149,11 +175,26 @@ dim(EL.ortho.GRN.counts) #67
 # but hard to tell because multiple of the transcripts will match 
 ```
 
-so now I will have to figure out how to separate these out and plot them...
+merge with vst counts file
 
-and I want them grouped and plotted in stage groups
+```{r}
+vst.EL.ortho.GRN.counts <- merge(vst_counts_stage_orthogroups, ortho.GRN, by= "Orthogroup", sort = TRUE)
+vst.EL.ortho.GRN.counts
+dim(vst.EL.ortho.GRN.counts) #67
 
-I don't think it's in tidy format?
+```
+
+merge with rlog counts file
+
+```{r}
+rlog.EL.ortho.GRN.counts <- merge(rlog_counts_stage_orthogroups, ortho.GRN, by= "Orthogroup", sort = TRUE)
+rlog.EL.ortho.GRN.counts
+dim(rlog.EL.ortho.GRN.counts) #67
+
+```
+
+
+ I want them grouped and plotted in stage groups
 
 I think I will have to transpose/change the way the dataframe is organized after I subset it for each gene 
 ```{r}
@@ -188,8 +229,58 @@ p58_a_point <- ggplot(t.p58_a_samp_info, aes(x=Stage, y=Normalized_Counts, group
   geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("p58-a") + scale_y_continuous(trans='log10')
 p58_a_point
 
+```
+
+plot p58-a using vst counts
+
+```{r}
+# separate out row number
+gene<- vst.EL.ortho.GRN.counts[1,]
+# OG0000751	TRINITY_DN30130_c0_g1
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+vst_p58_a_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("vst_p58_a")
+vst_p58_a_point
 
 ```
+Looks really similar, which is good, but the scale is so much nicer
+
+rlog transformed
+
+```{r}
+# separate out row number
+gene<- rlog.EL.ortho.GRN.counts[1,]
+# OG0000751	TRINITY_DN30130_c0_g1
+gene_samp <- gene[,c(3:29)]
+# transpose
+t.gene_samp <- as.data.frame(t(gene_samp))
+# add in other info for graphing 
+t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
+rownames(t.gene_samp_info) <- NULL
+colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
+t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+rlog_p58_a_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("rlog_p58_a")
+rlog_p58_a_point
+
+```
+very similar
+
+
+make it clearer the DEGs between eggs and four cells? those are "smaller" differences
+
+
+
+
 
 ```{r}
 # Ets1/2

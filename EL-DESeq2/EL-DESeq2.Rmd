@@ -234,6 +234,9 @@ resultsNames(dds_Stage)
 vst_stage <- vst(dds_Stage, blind = FALSE)
 vst_stage_counts <- assay(vst_stage)
 write.table(vst_stage_counts,"vst_stage_counts.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
+rlog_stage <- rlog(dds_Stage, blind = FALSE)
+rlog_stage_counts <- assay(rlog_stage)
+write.table(rlog_stage_counts,"rlog_stage_counts.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
 ```
 Get results for all stage comparisons 
 
