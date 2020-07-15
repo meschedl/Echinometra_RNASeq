@@ -193,6 +193,7 @@ dim(rlog.EL.ortho.GRN.counts) #67
 
 ```
 
+play with vst gene count dataset to get to tidy format 
 ```{r}
 t.vst <- as.data.frame(t(vst.EL.ortho.GRN.counts))
 head(t.vst)
@@ -203,57 +204,164 @@ t.vst <- t.vst[-c(1,2,30),]
 
 t.vst.samp <- cbind(Sample_info, t.vst)
 t.vst.samp
+colnames(t.vst)
+colnames(t.vst.samp) <- c("Sample", "Stage", "Temp", "p58_a",  "Ets1_2" , "FoxQ2_1" ,  "Erg"     ,  "Ttrspn_19", "Cara7LA"  , "Not"   ,    "Not_2"   ,    "Eve"    ,   "Blimp1"  ,  "RhoA"  ,    "Gcm"  ,     "Sm37", "Otx"   ,    "Pks2"   ,   "Tbr"   ,    "Tel"    ,   "Sp5"  ,     "Myc"  ,     "Cycpln"    ,"IrxA"   ,   "Wnt5" ,     "Emx"    ,   "Wnt1"  ,    "Wnt16"  ,   "Sm29" ,"p58_b"  ,   "Wnt4"    ,  "Delta"  ,   "FoxG"     , "GataC"    , "ScratchX" , "Msxl"   ,   "FoxB"   ,   "Endo16"  ,  "E2f3"  ,    "Nodal" ,    "Chordin" ,  "Wnt8", "Tgif"   ,   "FoxA"  ,    "Alx1"    ,  "Vegf3"  ,   "Sip1"   ,   "Pitx2"   ,  "Nk1"    ,   "SoxE"   ,   "Lox"     ,  "Wnt10"  ,   "FoxC"   ,   "Sm50"    ,  "Msp130", "HesC"   ,   "C-lectin" , "SoxC"    ,  "Shr2"  ,    "FoxY"  ,    "Ese"   ,    "Gatae"   ,  "Gsc"   ,    "Lefty"    , "Six3"  ,    "Bra"  ,     "Hox7"  ,    "Hh", "P19"   ,    "FoxF")
+t.vst.samp
+# to order the stages in chronological order
+t.vst.samp$Stage <- factor(t.vst.samp$Stage,
+    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+
+for(i in 4:ncol(t.vst.samp)) {
+t.vst.samp[,i] <- as.numeric(as.character(t.vst.samp[,i]))
+}
+
+t.vst.samp$p58_a <- as.numeric(as.character(t.vst.samp$p58_a))
+
 
 write.table(t.vst.samp,"t.vst.samp.txt",quote=FALSE,col.names=TRUE,row.names=TRUE,sep="\t")
 ```
 
+
+"p58_a",  "Ets1_2" , "FoxQ2_1" ,  "Erg"     ,  "Ttrspn_19", "Cara7LA"  , "Not"   ,    "Not_2"   ,    "Eve"    ,   "Blimp1"  ,  "RhoA"  ,    "Gcm"  ,     "Sm37", "Otx"   ,    "Pks2"   ,   "Tbr"   ,    "Tel"    ,   "Sp5"  ,     "Myc"  ,     "Cycpln"    ,"IrxA"   ,   "Wnt5" ,     "Emx"    ,   "Wnt1"  ,    "Wnt16"  ,   "Sm29" ,"p58_b"  ,   "Wnt4"    ,  "Delta"  ,   "FoxG"     , "GataC"    , "ScratchX" , "Msxl"   ,   "FoxB"   ,   "Endo16"  ,  "E2f3"  ,    "Nodal" ,    "Chordin" ,  "Wnt8", "Tgif"   ,   "FoxA"  ,    "Alx1"    ,  "Vegf3"  ,   "Sip1"   ,   "Pitx2"   ,  "Nk1"    ,   "SoxE"   ,   "Lox"     ,  "Wnt10"  ,   "FoxC"   ,   "Sm50"    ,  "Msp130", "HesC"   ,   "C-lectin" , "SoxC"    ,  "Shr2"  ,    "FoxY"  ,    "Ese"   ,    "Gatae"   ,  "Gsc"   ,    "Lefty"    , "Six3"  ,    "Bra"  ,     "Hox7"  ,    "Hh", "P19"   ,    "FoxF"
+
 ```{r}
 
+vst_p58_a_point <- ggplot(t.vst.samp, aes(x=Stage, y=p58_a, group =Stage)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("vst_p58_a")
+vst_p58_a_point
 
+vst_Erg_point <- ggplot(t.vst.samp, aes(x=Stage, y=Erg, group =Stage)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("vst_Erg")
+vst_Erg_point
 
+vst_Ets1_2_point <- ggplot(t.vst.samp, aes(x=Stage, y=Ets1_2, group =Stage)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("vst_Ets1_2")
+vst_Ets1_2_point
 
+vst_Ttrspn_19_point <- ggplot(t.vst.samp, aes(x=Stage, y=Ttrspn_19, group =Stage)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("vst_Ttrspn_19")
+vst_Ttrspn_19_point
+
+vst_Cara7LA_point <- ggplot(t.vst.samp, aes(x=Stage, y=Cara7LA, group =Stage)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("vst_Cara7LA")
+vst_Cara7LA_point
+
+vst_Not_point <- ggplot(t.vst.samp, aes(x=Stage, y=Not, group =Stage)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("vst_Not")
+vst_Not_point
+
+vst_Not_2_point <- ggplot(t.vst.samp, aes(x=Stage, y=Not_2, group =Stage)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("vst_Not_2")
+vst_Not_2_point
+
+vst_Eve_point <- ggplot(t.vst.samp, aes(x=Stage, y=Eve, group =Stage)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("vst_Eve")
+vst_Eve_point
+
+vst_Blimp1_point <- ggplot(t.vst.samp, aes(x=Stage, y=Blimp1, group =Stage)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("vst_Blimp1")
+vst_Blimp1_point
+
+vst_Rhoy_point <- ggplot(t.vst.samp, aes(x=Stage, y=RhoA, group =Stage)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("vst_RhoA")
+vst_Rhoy_point
+```
+
+```{r}
+# scale? so they all can be plot on one??
+t.vst
+t.vst.scale <- t.vst[-c(1:3),]
+t.vst.scale
+```
+
+code from Devon DeRaad
+```{r}
+# separate out row number
+t.vst<-read.table("t.vst.samp.txt")
+
+tidy.df<-data.frame()
+for (i in 4:ncol(t.vst)){
+  chunk<-t.vst[,c(2,i)] # take dataframe and keep all rows and column 2 and column i and saves a s "chunk"
+  chunk<-as.data.frame(cbind(chunk,rep(colnames(t.vst)[i]))) # bind chunk dataframe and add other column on it that is the name of the gene 
+  colnames(chunk)[2:3]<-c("expression","gene")
+  tidy.df<-as.data.frame(rbind(tidy.df,chunk))
+}
+
+plot_list <- list()
+for (i in levels(as.factor(tidy.df$gene))) {
+  #subset df to only gene of interest
+  t.gene_samp_info<-tidy.df[tidy.df$gene == i,]
+  #reorder stage
+  t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage, levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+  #ggplot
+  plot_list[[i]]<-ggplot(t.gene_samp_info, aes(x=Stage, y=expression, group =Stage)) + 
+    geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle(i)
+
+}
 ```
 
 
 
 
-
- I want them grouped and plotted in stage groups
-
-I think I will have to transpose/change the way the dataframe is organized after I subset it for each gene 
 ```{r}
-# start wth first genee p58-a
-# separate out the row number, number one!
-p58_a <- EL.ortho.GRN.counts[1,]
-p58_a # TRINITY_DN3715_c0_g1 OG0000526
-# now only retain the columns with the sample names
-dim(p58_a) #30
-p58_a_samp <- p58_a[,c(3:29)]
-dim(p58_a_samp) # 27
-
-# ok now transpose?
-t.p58_a_samp <- as.data.frame(t(p58_a_samp))
-t.p58_a_samp
-# ok now this needs basically all the info from the sample file added to it, the sample names are in the same order
-Sample_info <- read.csv("el-treatment-data.csv", header=TRUE, sep=",")
-
-t.p58_a_samp_info <- cbind(Sample_info, t.p58_a_samp)
-t.p58_a_samp_info
-rownames(t.p58_a_samp_info) <- NULL
-colnames(t.p58_a_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.p58_a_samp_info
+tidy.df$Stage <- factor(tidy.df$Stage, levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+ggplot(tidy.df, aes(x=Stage, y=expression, group =Stage, color=gene)) + 
+  geom_point() + stat_summary(fun=mean, geom="line", aes(group=gene, color=gene)) + theme_linedraw()
 ```
-Ok so now I should be able to plot counts by stage?!
+
+split these up by sig degs 
+```{r}
+fourcell_egg_GRN_counts$common_name
+# need to somehow subset tidy.df to only these 
+
+FC_E_DEG_counts <- filter(tidy.df, gene %in% c("p58_a"  , "FoxQ2_1", "Eve"  ,   "Sm37",    "Tel"  ,   "Wnt1" ,   "Nodal" ,  "Wnt8" ,   "HesC"  ,  "Lefty"  , "Hox7" ,"P19"    , "FoxF"))
+FC_E_DEG_counts
+# relevel
+FC_E_DEG_counts$Stage <- factor(FC_E_DEG_counts$Stage, levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+ggplot(FC_E_DEG_counts, aes(x=Stage, y=expression, group =Stage, color=gene)) + 
+  geom_line() + stat_summary(fun=mean, geom="line", aes(group=gene, color=gene)) + theme_linedraw() + ylab("VST transformed normalized counts")
+ 
+```
 
 ```{r}
-# to order the stages in chronological order
-t.p58_a_samp_info$Stage <- factor(t.p58_a_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-p58_a_point <- ggplot(t.p58_a_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("p58-a") + scale_y_continuous(trans='log10')
-p58_a_point
+Blastula_4cell_GRN_counts$common_name
+B_FC_DEG_counts <- filter(tidy.df, gene %in% c( "p58_a"  ,   "Ets1/2" ,   "FoxQ2_1" ,  "Erg"     ,  "Ttrspn_19" ,"Cara7LA" ,  "Not" ,      "Not_2"    ,   "Eve","Blimp1"  ,  "Gcm"   ,    "Sm37"    ,  "Otx"    ,   "Pks2"   ,   "Tbr"    ,   "Tel"  ,     "Sp5"    ,   "Myc" , "Cycpln"  ,  "IrxA"  ,    "Emx"   ,    "Wnt1"   ,   "Wnt16"   ,  "Sm29" ,     "p58_b"   ,  "Delta"   ,  "FoxG", "GataC"  ,   "ScratchX" , "Msxl"   ,   "FoxB"  ,    "Endo16"   , "E2f3" ,     "Nodal"   ,  "Chordin"  , "Wnt8" ,"Sm50"   ,   "Msp130"  ,  "HesC"  ,    "C-lectin",  "SoxC" ,     "Shr2"   ,   "FoxY"    ,  "Ese"    ,   "Gatae" ,"Gsc"  ,     "Lefty"    , "Six3"   ,   "Bra"     ,  "Hox7"    ,  "Hh"      ,  "P19"      , "FoxF"))
+# relevel
+B_FC_DEG_counts$Stage <- factor(B_FC_DEG_counts$Stage, levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+ggplot(B_FC_DEG_counts, aes(x=Stage, y=expression, group =Stage, color=gene)) + 
+  geom_line() + stat_summary(fun=mean, geom="line", aes(group=gene, color=gene)) + theme_linedraw() + ylab("VST transformed normalized counts")
 
 ```
+
+```{r}
+Blastula_Gastrula_GRN_counts$common_name
+B_G_DEG_counts <- filter(tidy.df, gene %in% c("Ets1_2"  ,  "FoxQ2_1"  , "Erg"    ,   "Ttrspn_19" ,"Cara7LA",   "Not"   ,    "Not_2"   ,    "Eve"    ,   "Blimp1"   , "RhoA"   ,   "Gcm"    ,   "Sm37", "Otx"   ,    "Pks2"  ,    "Tbr"   ,    "Tel",       "Myc"  ,     "Wnt16"  ,   "Sm29"  ,    "GataC"  ,   "ScratchX" , "FoxB",      "Endo16"  ,  "Chordin" ,"Alx1"    ,  "Vegf3"   ,  "Pitx2"   ,  "SoxE"   ,   "Lox"   ,    "Wnt10"    , "FoxC"   ,   "Sm50"    ,  "Msp130"   , "Shr2" ,     "Gsc"   ,    "Hh","FoxF"))
+B_G_DEG_counts$Stage <- factor(B_G_DEG_counts$Stage, levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+ggplot(B_G_DEG_counts, aes(x=Stage, y=expression, group =Stage, color=gene)) + 
+  geom_line() + stat_summary(fun=mean, geom="line", aes(group=gene, color=gene)) + theme_linedraw() + ylab("VST transformed normalized counts")
+  
+B_G_DEG_counts2 <- filter(tidy.df, Stage %in% c("blastula", "gastrula"))
+expression <- B_G_DEG_counts2
+scaled_express <- scale(expression)
+
+B_G_DEG_counts2.scaled <- cbind(B_G_DEG_counts2, scaled_express)
+B_G_DEG_counts2.scaled
+
+
+ggplot(B_G_DEG_counts2, aes(x=Stage, y=expression, group =Stage, color=gene)) + 
+  geom_line() + stat_summary(fun=mean, geom="line", aes(group=gene, color=gene)) + theme_linedraw() + ylab("VST transformed normalized counts")
+```
+
+```{r}
+Gastrula_Larvae_GRN_counts$common_name
+G_L_DEG_counts <- filter(tidy.df, gene %in% c("Ets1_2"  ,  "FoxQ2_1" ,  "Erg"  ,     "Ttrspn_19" ,"Cara7LA" ,  "Not" ,      "Not_2"    ,   "Eve"     ,  "Blimp1"  ,  "RhoA"    ,  "Gcm"     ,  "Sm37", "Otx"     ,  "Pks2"    ,  "Tbr"    ,   "Tel"   ,    "Myc"  ,    "Wnt16"   ,  "Sm29"   ,   "GataC"   ,  "ScratchX"  ,"FoxB"  ,   "Endo16"  ,  "Chordin", "Alx1"   ,   "Vegf3"  ,   "Pitx2"    , "SoxE"     , "Lox"   ,    "Wnt10"   ,  "FoxC"  ,    "Sm50"     , "Msp130" ,   "Shr2"  ,    "Gsc"   ,    "Hh", "FoxF"))
+G_L_DEG_counts$Stage <- factor(G_L_DEG_counts$Stage, levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
+ggplot(G_L_DEG_counts, aes(x=Stage, y=expression, group =Stage, color=gene)) + 
+  geom_line() + stat_summary(fun=mean, geom="line", aes(group=gene, color=gene)) + theme_linedraw() + ylab("VST transformed normalized counts")
+```
+
+
+
 
 plot p58-a using vst counts
 
@@ -296,1272 +404,6 @@ rlog_p58_a_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, g
   geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("rlog_p58_a")
 rlog_p58_a_point
 
-```
-very similar
-
-
-make it clearer the DEGs between eggs and four cells? those are "smaller" differences
-
-
-
-
-
-```{r}
-# Ets1/2
-# separate out row number
-gene<- EL.ortho.GRN.counts[2,]
-# OG0000751	TRINITY_DN30130_c0_g1
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Ets1_2_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Ets1_2") + scale_y_continuous(trans='log10')
-Ets1_2_point
-```
-
-```{r}
-# FoxQ2_1 
-# separate out row number 
-gene <- EL.ortho.GRN.counts[3,]
-# 
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-FoxQ2_1_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("FoxQ2_1") + scale_y_continuous(trans='log10')
-FoxQ2_1_point
-```
-
-```{r}
-# Erg
-# separate out row number 
-gene <- EL.ortho.GRN.counts[4,]
-# 
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Erg_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Erg") + scale_y_continuous(trans='log10')
-Erg_point
-```
-
-```{r}
-# Ttrspn_19
-# separate out row number
-gene <- EL.ortho.GRN.counts[5,]
-# 
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Ttrspn_19_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Ttrspn_19") + scale_y_continuous(trans='log10')
-Ttrspn_19_point
-```
-
-```{r}
-# Cara7LA
-# separate out row number
-gene <- EL.ortho.GRN.counts[6,]
-# 
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Cara7LA_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("TCara7LA") + scale_y_continuous(trans='log10')
-Cara7LA_point 
-```
-
-problem with the not gene, it has two EL genes that are a part of the same orthogroup, I will have to make separate graphs to preserve the information
-
-```{r}
-# OG0002162	TRINITY_DN48762_c0_g1
-# first not gene graph
-# separate out row number
-gene <- EL.ortho.GRN.counts[7,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-TRINITY_DN48762_c0_g1_not_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("TRINITY_DN48762_c0_g1_not") + scale_y_continuous(trans='log10')
-TRINITY_DN48762_c0_g1_not_point
-```
-
-```{r}
-# OG0002162	TRINITY_DN5408_c0_g1
-# second not gene graph
-# separate out row number
-gene <- EL.ortho.GRN.counts[8,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-TRINITY_DN5408_c0_g1_not_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("TRINITY_DN5408_c0_g1_not") + scale_y_continuous(trans='log10')
-TRINITY_DN5408_c0_g1_not_point
-```
-
-```{r}
-# Eve
-# separate out row number
-gene <- EL.ortho.GRN.counts[9,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Eve_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Eve") + scale_y_continuous(trans='log10')
-Eve_point
-```
-
-```{r}
-# Blimp1
-# separate out row number
-gene <- EL.ortho.GRN.counts[10,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Blimp1_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Blimp1") + scale_y_continuous(trans='log10')
-Blimp1_point
-```
-
-```{r}
-# RhoA
-# separate out row number
-gene <- EL.ortho.GRN.counts[11,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-RhoA_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("RhoA") + scale_y_continuous(trans='log10')
-RhoA_point
-```
-
-```{r}
-# Gcm
-# separate out row number
-gene <- EL.ortho.GRN.counts[12,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Gcm_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Gcm") + scale_y_continuous(trans='log10')
-Gcm_point
-```
-
-```{r}
-# Sm37
-# separate out row number
-gene <- EL.ortho.GRN.counts[13,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Sm37_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Sm37") + scale_y_continuous(trans='log10')
-Sm37_point
-```
-
-```{r}
-# Otx
-# separate out row number
-gene <- EL.ortho.GRN.counts[14,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Otx_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Otx") + scale_y_continuous(trans='log10')
-Otx_point
-```
-
-```{r}
-# Pks2
-# separate out row number
-gene <- EL.ortho.GRN.counts[15,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Pks2_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Pks2") + scale_y_continuous(trans='log10')
-Pks2_point
-```
-
-```{r}
-# Tbr
-# separate out row number
-gene <- EL.ortho.GRN.counts[16,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Tbr_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Tbr") + scale_y_continuous(trans='log10')
-Tbr_point
-```
-
-```{r}
-# Tel
-# separate out row number
-gene <- EL.ortho.GRN.counts[17,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Tel_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Tel") + scale_y_continuous(trans='log10')
-Tel_point
-```
-
-```{r}
-# Sp5
-# separate out row number
-gene <- EL.ortho.GRN.counts[18,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Sp5_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Sp5") + scale_y_continuous(trans='log10')
-Sp5_point
-```
-
-```{r}
-# Myc
-# separate out row number
-gene <- EL.ortho.GRN.counts[19,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Myc_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Myc") + scale_y_continuous(trans='log10')
-Myc_point
-```
-
-```{r}
-# Cycpln
-# separate out row number
-gene <- EL.ortho.GRN.counts[20,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Cycpln_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Cycpln") + scale_y_continuous(trans='log10')
-Cycpln_point
-```
-
-```{r}
-# IrxA
-# separate out row number
-gene <- EL.ortho.GRN.counts[21,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-IrxA_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("IrxA") + scale_y_continuous(trans='log10')
-IrxA_point
-```
-
-```{r}
-# Wnt5
-# separate out row number
-gene <- EL.ortho.GRN.counts[22,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Wnt5_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Wnt5") + scale_y_continuous(trans='log10')
-Wnt5_point
-```
-
-```{r}
-# 	Emx
-# separate out row number
-gene <- EL.ortho.GRN.counts[23,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Emx_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Emx") + scale_y_continuous(trans='log10')
-Emx_point
-```
-
-```{r}
-# Wnt1
-# separate out row number
-gene <- EL.ortho.GRN.counts[24,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Wnt1_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Wnt1") + scale_y_continuous(trans='log10')
-Wnt1_point
-```
-
-```{r}
-# Wnt16
-# separate out row number
-gene <- EL.ortho.GRN.counts[25,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Wnt16_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Wnt16") + scale_y_continuous(trans='log10')
-Wnt16_point
-```
-
-```{r}
-# Sm29
-# separate out row number
-gene <- EL.ortho.GRN.counts[26,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Sm29_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Sm29") + scale_y_continuous(trans='log10')
-Sm29_point
-```
-
-```{r}
-# p58-b
-# separate out row number
-gene <- EL.ortho.GRN.counts[27,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-p58_b_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("p58-b") + scale_y_continuous(trans='log10')
-p58_b_point
-```
-
-```{r}
-# Wnt4
-# separate out row number
-gene <- EL.ortho.GRN.counts[28,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Wnt4_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Wnt4") + scale_y_continuous(trans='log10')
-Wnt4_point
-```
-
-```{r}
-# Delta
-# separate out row number
-gene <- EL.ortho.GRN.counts[29,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Delta_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Delta") + scale_y_continuous(trans='log10')
-Delta_point
-```
-
-```{r}
-# FoxG
-# separate out row number
-gene <- EL.ortho.GRN.counts[30,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-FoxG_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("FoxG") + scale_y_continuous(trans='log10')
-FoxG_point
-```
-
-```{r}
-# GataC
-# separate out row number
-gene <- EL.ortho.GRN.counts[31,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-GataC_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("GataC") + scale_y_continuous(trans='log10')
-GataC_point
-```
-
-```{r}
-# ScratchX
-# separate out row number
-gene <- EL.ortho.GRN.counts[32,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-ScratchX_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("ScratchX") + scale_y_continuous(trans='log10')
-ScratchX_point
-```
-
-```{r}
-# Msxl
-# separate out row number
-gene <- EL.ortho.GRN.counts[33,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Msxl_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Msxl") + scale_y_continuous(trans='log10')
-Msxl_point
-```
-
-```{r}
-# FoxB
-# separate out row number
-gene <- EL.ortho.GRN.counts[34,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-FoxB_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("FoxB") + scale_y_continuous(trans='log10')
-FoxB_point
-```
-
-```{r}
-# Endo16
-# separate out row number
-gene <- EL.ortho.GRN.counts[35,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Endo16_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Endo16") + scale_y_continuous(trans='log10')
-Endo16_point
-```
-
-```{r}
-# 	E2f3
-# separate out row number
-gene <- EL.ortho.GRN.counts[36,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-E2f3_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("E2f3") + scale_y_continuous(trans='log10')
-E2f3_point
-```
-
-```{r}
-# Nodal
-# separate out row number
-gene <- EL.ortho.GRN.counts[37,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Nodal_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Nodal") + scale_y_continuous(trans='log10')
-Nodal_point
-```
-
-```{r}
-# Chordin
-# separate out row number
-gene <- EL.ortho.GRN.counts[38,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Chordin_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Chordin") + scale_y_continuous(trans='log10')
-Chordin_point
-```
-
-```{r}
-# Wnt8
-# separate out row number
-gene <- EL.ortho.GRN.counts[39,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Wnt8_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Wnt8") + scale_y_continuous(trans='log10')
-Wnt8_point
-```
-
-```{r}
-# Tgif
-# separate out row number
-gene <- EL.ortho.GRN.counts[40,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Tgif_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Tgif") + scale_y_continuous(trans='log10')
-Tgif_point
-```
-
-```{r}
-# FoxA
-# separate out row number
-gene <- EL.ortho.GRN.counts[41,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-FoxA_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("FoxA") + scale_y_continuous(trans='log10')
-FoxA_point
-```
-
-```{r}
-# Alx1
-# separate out row number
-gene <- EL.ortho.GRN.counts[42,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Alx1_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Alx1") + scale_y_continuous(trans='log10')
-Alx1_point
-```
-
-```{r}
-# Vegf3
-# separate out row number
-gene <- EL.ortho.GRN.counts[43,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Vegf3_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Vegf3") + scale_y_continuous(trans='log10')
-Vegf3_point
-```
-
-```{r}
-# Sip1
-# separate out row number
-gene <- EL.ortho.GRN.counts[44,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Sip1_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Sip1") + scale_y_continuous(trans='log10')
-Sip1_point
-```
-
-```{r}
-# Pitx2
-# separate out row number
-gene <- EL.ortho.GRN.counts[45,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Pitx2_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Pitx2") + scale_y_continuous(trans='log10')
-Pitx2_point
-```
-
-```{r}
-# 	Nk1
-# separate out row number
-gene <- EL.ortho.GRN.counts[46,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Nk1_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Nk1") + scale_y_continuous(trans='log10')
-Nk1_point
-```
-
-```{r}
-# SoxE
-# separate out row number
-gene <- EL.ortho.GRN.counts[47,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-SoxE_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("SoxE") + scale_y_continuous(trans='log10')
-SoxE_point
-```
-
-```{r}
-# Lox
-# separate out row number
-gene <- EL.ortho.GRN.counts[48,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Lox_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Lox") + scale_y_continuous(trans='log10')
-Lox_point
-```
-
-```{r}
-# Wnt10
-# separate out row number
-gene <- EL.ortho.GRN.counts[49,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Wnt10_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Wnt10") + scale_y_continuous(trans='log10')
-Wnt10_point
-```
-
-```{r}
-# FoxC
-# separate out row number
-gene <- EL.ortho.GRN.counts[50,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-FoxC_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("FoxC") + scale_y_continuous(trans='log10')
-FoxC_point
-```
-
-```{r}
-# Sm50
-# separate out row number
-gene <- EL.ortho.GRN.counts[51,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Sm50_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Sm50") + scale_y_continuous(trans='log10')
-Sm50_point
-```
-
-```{r}
-# Msp130
-# separate out row number
-gene <- EL.ortho.GRN.counts[52,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Msp130_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Msp130") + scale_y_continuous(trans='log10')
-Msp130_point
-```
-
-```{r}
-# HesC
-# separate out row number
-gene <- EL.ortho.GRN.counts[53,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-HesC_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("HesC") + scale_y_continuous(trans='log10')
-HesC_point
-```
-
-```{r}
-# C-lectin
-# separate out row number
-gene <- EL.ortho.GRN.counts[54,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-C_lectin_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("C-lectin") + scale_y_continuous(trans='log10')
-C_lectin_point
-```
-
-```{r}
-# SoxC
-# separate out row number
-gene <- EL.ortho.GRN.counts[55,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-SoxC_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("SoxC") + scale_y_continuous(trans='log10')
-SoxC_point
-```
-
-```{r}
-# Shr2
-# separate out row number
-gene <- EL.ortho.GRN.counts[56,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Shr2_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Shr2") + scale_y_continuous(trans='log10')
-Shr2_point
-```
-
-```{r}
-# 	FoxY
-# separate out row number
-gene <- EL.ortho.GRN.counts[57,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-FoxY_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("FoxY") + scale_y_continuous(trans='log10')
-FoxY_point
-```
-
-```{r}
-# Ese
-# separate out row number
-gene <- EL.ortho.GRN.counts[58,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Ese_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Ese") + scale_y_continuous(trans='log10')
-Ese_point
-```
-
-```{r}
-# Gatae
-# separate out row number
-gene <- EL.ortho.GRN.counts[59,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Gatae_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Gatae") + scale_y_continuous(trans='log10')
-Gatae_point
-```
-
-```{r}
-# Gsc
-# separate out row number
-gene <- EL.ortho.GRN.counts[60,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Gsc_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Gsc") + scale_y_continuous(trans='log10')
-Gsc_point
-```
-
-```{r}
-# Lefty
-# separate out row number
-gene <- EL.ortho.GRN.counts[61,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Lefty_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Lefty") + scale_y_continuous(trans='log10')
-Lefty_point
-```
-
-```{r}
-# Six3
-# separate out row number
-gene <- EL.ortho.GRN.counts[62,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Six3_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Six3") + scale_y_continuous(trans='log10')
-Six3_point
-```
-
-```{r}
-# Bra
-# separate out row number
-gene <- EL.ortho.GRN.counts[63,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Bra_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Bra") + scale_y_continuous(trans='log10')
-Bra_point
-```
-
-```{r}
-# Hox7
-# separate out row number
-gene <- EL.ortho.GRN.counts[64,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Hox7_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Hox7") + scale_y_continuous(trans='log10')
-Hox7_point
-```
-
-```{r}
-# Hh
-# separate out row number
-gene <- EL.ortho.GRN.counts[65,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-Hh_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("Hh") + scale_y_continuous(trans='log10')
-Hh_point
-```
-
-```{r}
-# P19
-# separate out row number
-gene <- EL.ortho.GRN.counts[66,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-P19_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("P19") + scale_y_continuous(trans='log10')
-P19_point
-```
-
-```{r}
-# FoxF
-# separate out row number
-gene <- EL.ortho.GRN.counts[67,]
-#
-gene_samp <- gene[,c(3:29)]
-# transpose
-t.gene_samp <- as.data.frame(t(gene_samp))
-# add in other info for graphing 
-t.gene_samp_info <- cbind(Sample_info, t.gene_samp)
-rownames(t.gene_samp_info) <- NULL
-colnames(t.gene_samp_info) <- c("Sample", "Stage", "Temp", "Normalized_Counts")
-t.gene_samp_info$Stage <- factor(t.gene_samp_info$Stage,
-    levels = c('eggs','fourcell', "blastula", "gastrula", "larvae"),ordered = TRUE)
-FoxF_point <- ggplot(t.gene_samp_info, aes(x=Stage, y=Normalized_Counts, group =Stage)) + 
-  geom_point() + stat_summary(fun=mean, geom="line", aes(group=1)) + theme_linedraw() + ggtitle("FoxF") + scale_y_continuous(trans='log10')
-FoxF_point
 ```
 
 
