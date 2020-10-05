@@ -76,4 +76,4 @@ EL_EGGS_2_S9_L001_R1_001.fastq.gz.trim.fq.gz \
 --CPU 20 --full_cleanup
 ```
 `sbatch EL-Trinity.sh`  
-Submitted job number 1122390
+Submitted job number 1125446
